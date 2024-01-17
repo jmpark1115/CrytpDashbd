@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block script %}
+{% endblock %}
+
+{% block content %}
+
+<body>
+
+    <div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<h3 class="text-primary">
+				h3. Trading Volume Management
+			</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<table class="table table-hover table-sm">
+				<thead>
+					<tr>
+						<th>
+							#
+						</th>
+						<th>
+							Price
+						</th>
+						<th>
+							Volume
+						</th>
+						<th>
+							Order
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							110
+						</td>
+						<td>
+							1111
+						</td>
+						<td>
+							100
+						</td>
+						<td>
+							10
+						</td>
+					</tr>
+					<tr class="table-active">
+						<td>
+							100
+						</td>
+						<td>
+							2222
+						</td>
+						<td>
+							200
+						</td>
+						<td>
+							20
+						</td>
+					</tr>
+					<tr class="table-success">
+						<td>
+							90
+						</td>
+						<td>
+							3333
+						</td>
+						<td>
+							200
+						</td>
+						<td>
+							10
+						</td>
+					</tr>
+					<tr class="table-warning">
+						<td>
+							85
+						</td>
+						<td>
+							2222
+						</td>
+						<td>
+							100
+						</td>
+						<td>
+							11
+						</td>
+					</tr>
+					<tr class="table-danger">
+						<td>
+							80
+						</td>
+						<td>
+							1111
+						</td>
+						<td>
+							955
+						</td>
+						<td>
+							5
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col-md-6">
+			<form role="form">
+				<div class="form-group">
+
+					<label for="exampleInputEmail1">
+						Email address
+					</label>
+					<input type="email" class="form-control" id="exampleInputEmail1">
+				</div>
+				<div class="form-group">
+
+					<label for="exampleInputPassword1">
+						Password
+					</label>
+					<input type="password" class="form-control" id="exampleInputPassword1">
+				</div>
+				<div class="form-group">
+
+					<label for="exampleInputFile">
+						File input
+					</label>
+					<input type="file" class="form-control-file" id="exampleInputFile">
+					<p class="help-block">
+						Example block-level help text here.
+					</p>
+				</div>
+				<div class="checkbox">
+
+					<label>
+						<input type="checkbox"> Check me out
+					</label>
+				</div>
+				<button type="submit" class="btn btn-primary">
+					Submit
+				</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

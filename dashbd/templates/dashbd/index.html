@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block style %}
+<style type="text/css">
+    .jumbotron {
+        background-image: url("{% static images_path %}");
+        background-size: cover;
+        background-position: center center;
+        text-shadow: black 0.2em 0.2em 0.2em;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="jumbotron">
+        <h2>
+            Welcome to Auto Trading System !
+        </h2>
+        <p>
+            This is a Auto Trading System.
+        </p>
+        <p>
+            <a class="btn btn-primary btn-large" href="#">Learn more</a>
+        </p>
+    </div>
+
+	<div class="row">
+		<div class="col-md-4">
+			<h2>
+				Trading Control
+			</h2>
+			<p>
+				Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+			</p>
+			<p>
+				<a class="btn" href="#">View details »</a>
+			</p>
+		</div>
+		<div class="col-md-4">
+			<h2>
+				Orderbook Control
+			</h2>
+			<p>
+				Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+			</p>
+			<p>
+				<a class="btn" href="#">View details »</a>
+			</p>
+		</div>
+		<div class="col-md-4">
+			<h2>
+				Auto Trading
+			</h2>
+			<p>
+				Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+			</p>
+			<p>
+				<a class="btn" href="#">View details »</a>
+			</p>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
