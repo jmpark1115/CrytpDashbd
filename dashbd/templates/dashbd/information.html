@@ -5,148 +5,815 @@
 {% endblock %}
 
 {% block content %}
+<script src="{% static 'js/websocket_binance.js' %}"></script>
+<div class="container-main main-page-board trading">
+                <section class="page-board trade-page">
+                    <header class="board-header trade-header">
+                        <div class="header-right">
+                            <div class="site-lang">
+                                <button class="btn-lang lang-ko active">KR</button>
+                                <button class="btn-lang lang-en">EN</button>
+                            </div>
+                            <div class="site-darkmode">
+                                <button class="btn-darkmode">다크모드 <span class="montserrat">OFF</span></button>
+                            </div>
+                        </div>
+                        <div class="header-left">
+                            <h2>트레이딩</h2>
+                        </div>
+                    </header>
+                    <div class="board-main">
+                        <h3>실시간 랭킹</h3>
+                        <div class="real real01">
+                            <ul>
+                                <li class="active">
+                                    <button class="btn-board-list board1">#거래량순</button>
+                                </li>
+                                <li>
+                                    <button class="btn-board-list board1">#HOT급등</button>
+                                </li>
+                                <li>
+                                    <button class="btn-board-list board1">#급락ㅠㅠ</button>
+                                </li>
+                                <li>
+                                    <button class="btn-board-list board1">#신규상장</button>
+                                </li>
+                                <li>
+                                    <button class="btn-board-list board1">#프리미엄</button>
+                                </li>
+                                <li>
+                                    <button class="btn-board-list board1">#김치프리미엄</button>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ranking-content content1 active">
+                            <div class="content-right">
+                                <div class="title">
+                                    <p>비트코인 <span>BTC</span></p>
+                                </div>
+                                <div class="number">
+                                    <h3>13,000,000</h3>
+                                    <span>-0.44%</span>
+                                    <span>(55,000)</span>
+                                </div>
+                            </div>
+                            <div class="content-left">
+                                <table class="type-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="list-lately">최근 24시간</th>
+                                            <th scope="col" class="list-present">현재가</th>
+                                            <th scope="col" class="list-flu">등락률</th>
+                                            <th scope="col" class="list-tran">거래대금</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,000백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately eth">이더리움 <span>ETH</span></th>
+                                            <th class="list-present">410,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">8,222백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,222백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately eth">이더리움 <span>ETH</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,222백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,222백만</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="ranking-content content2">
+                            <div class="content-right">
+                                <div class="img_box">
+                                    <img src="src/img/trading-graph01.png" alt="">
+                                </div>
+                                <div class="title">
+                                    <p>비트코인 <span>BTC</span></p>
+                                </div>
+                                <div class="number">
+                                    <h3>13,000,000</h3>
+                                    <span>-0.44%</span>
+                                    <span>(55,000)</span>
+                                </div>
+                            </div>
+                            <div class="content-left">
+                                <table class="type-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="list-lately">최근 24시간</th>
+                                            <th scope="col" class="list-present">현재가</th>
+                                            <th scope="col" class="list-flu">등락률</th>
+                                            <th scope="col" class="list-tran">거래대금</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,000백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately eth">이더리움 <span>ETH</span></th>
+                                            <th class="list-present">410,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">8,222백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,222백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately eth">이더리움 <span>ETH</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,222백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,222백만</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="ranking-content content3">
+                            <div class="content-right">
+                                <div class="img_box">
+                                    <img src="src/img/trading-graph01.png" alt="">
+                                </div>
+                                <div class="title">
+                                    <p>비트코인 <span>BTC</span></p>
+                                </div>
+                                <div class="number">
+                                    <h3>13,000,000</h3>
+                                    <span>-0.44%</span>
+                                    <span>(55,000)</span>
+                                </div>
+                            </div>
+                            <div class="content-left">
+                                <table class="type-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="list-lately">최근 24시간</th>
+                                            <th scope="col" class="list-present">현재가</th>
+                                            <th scope="col" class="list-flu">등락률</th>
+                                            <th scope="col" class="list-tran">거래대금</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,000백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately eth">이더리움 <span>ETH</span></th>
+                                            <th class="list-present">410,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">8,222백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,222백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately eth">이더리움 <span>ETH</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,222백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,222백만</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="ranking-content content4">
+                            <div class="content-right">
+                                <div class="img_box">
+                                    <img src="src/img/trading-graph01.png" alt="">
+                                </div>
+                                <div class="title">
+                                    <p>비트코인 <span>BTC</span></p>
+                                </div>
+                                <div class="number">
+                                    <h3>13,000,000</h3>
+                                    <span>-0.44%</span>
+                                    <span>(55,000)</span>
+                                </div>
+                            </div>
+                            <div class="content-left">
+                                <table class="type-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="list-lately">최근 24시간</th>
+                                            <th scope="col" class="list-present">현재가</th>
+                                            <th scope="col" class="list-flu">등락률</th>
+                                            <th scope="col" class="list-tran">거래대금</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,000백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately eth">이더리움 <span>ETH</span></th>
+                                            <th class="list-present">410,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">8,222백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,222백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately eth">이더리움 <span>ETH</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,222백만</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">13,000,000</th>
+                                            <th class="list-flu down">-0.44%</th>
+                                            <th class="list-tran">12,222백만</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="ranking-content content5">
+                            <div class="content-right">
+                                <div class="img_box">
+                                    <img src="src/img/trading-graph01.png" alt="">
+                                </div>
+                                <div class="title">
+                                    <p>비트코인 <span>BTC</span></p>
+                                </div>
+                                <div class="number">
+                                    <h3>13,000,000</h3>
+                                    <span>-0.44%</span>
+                                    <span>(55,000)</span>
+                                </div>
+                            </div>
+                            <div class="content-left">
+                                <table class="type-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="list-lately">최근 1시간</th>
+                                            <th scope="col" class="list-ex01">거래소1</th>
+                                            <th scope="col" class="list-ex02">거래소2</th>
+                                            <th scope="col" class="list-pre">프리미엄</th>
+                                            <th scope="col" class="list-flu">등락률</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="list-lately btc">폴카닷 <span>DOT</span></th>
+                                            <th class="list-ex01">비아낸스 $44.2</th>
+                                            <th class="list-ex02">비트파이낸스 $40.2</th>
+                                            <th class="list-pre up">10.50%</th>
+                                            <th class="list-flu up">32.44%</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">폴카닷 <span>DOT</span></th>
+                                            <th class="list-ex01">비아낸스 $44.2</th>
+                                            <th class="list-ex02">비트파이낸스 $40.2</th>
+                                            <th class="list-pre up">10.50%</th>
+                                            <th class="list-flu up">32.44%</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">폴카닷 <span>DOT</span></th>
+                                            <th class="list-ex01">비아낸스 $44.2</th>
+                                            <th class="list-ex02">비트파이낸스 $40.2</th>
+                                            <th class="list-pre up">10.50%</th>
+                                            <th class="list-flu up">32.44%</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">폴카닷 <span>DOT</span></th>
+                                            <th class="list-ex01">비아낸스 $44.2</th>
+                                            <th class="list-ex02">비트파이낸스 $40.2</th>
+                                            <th class="list-pre up">10.50%</th>
+                                            <th class="list-flu up">32.44%</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">폴카닷 <span>DOT</span></th>
+                                            <th class="list-ex01">비아낸스 $44.2</th>
+                                            <th class="list-ex02">비트파이낸스 $40.2</th>
+                                            <th class="list-pre up">10.50%</th>
+                                            <th class="list-flu up">32.44%</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="ranking-content content6">
+                            <div class="content-right">
+                                <div class="img_box">
+                                    <img src="src/img/trading-graph01.png" alt="">
+                                </div>
+                                <div class="title">
+                                    <p>비트코인 <span>BTC</span></p>
+                                </div>
+                                <div class="number">
+                                    <h3>13,000,000</h3>
+                                    <span>-0.44%</span>
+                                    <span>(55,000)</span>
+                                </div>
+                            </div>
+                            <div class="content-left">
+                                <table class="type-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="list-lately">최근 24시간</th>
+                                            <th scope="col" class="list-present">업비트</th>
+                                            <th scope="col" class="list-flu">바이낸스</th>
+                                            <th scope="col" class="list-tran">김치프리미엄</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">40,000,000</th>
+                                            <th class="list-flu down">$36,000</th>
+                                            <th class="list-pre up">3.20%</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">40,000,000</th>
+                                            <th class="list-flu down">$36,000</th>
+                                            <th class="list-pre up">3.20%</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">40,000,000</th>
+                                            <th class="list-flu down">$36,000</th>
+                                            <th class="list-pre up">3.20%</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">40,000,000</th>
+                                            <th class="list-flu down">$36,000</th>
+                                            <th class="list-pre up">3.20%</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="list-lately btc">비트코인 <span>BTC</span></th>
+                                            <th class="list-present">40,000,000</th>
+                                            <th class="list-flu down">$36,000</th>
+                                            <th class="list-pre up">3.20%</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <h3>실시간 트레이딩</h3>
+                        <div class="real real02">
+                            <ul>
+                                <li class="active">
+                                    <button class="btn-board-list board1">Binance</button>
+                                </li>
+                                <li>
+                                    <button class="btn-board-list board1">BitMex</button>
+                                </li>
+                                <li>
+                                    <button class="btn-board-list board1">FTX</button>
+                                </li>
+                            </ul>
+                        </div>
 
-<body>
+                        <!-- Binance Area Start -->
+                        <div class="trading-content content1 active">
+                            <div class="content-left">
+                                <div class="left-header">
+                                    <div class="btn-coin-name">
+                                        <label for="nameList" class="sr-only">목록 표시 갯수</label>
+                                        <select id="nameList" name="nameListInput">
+                                 <option value="btc">BTC1</option>
+                              </select>
+                                    </div>
+                                    <ul>
+                                        <li>
+                                            <p>업비트</p>
+                                            <span>KRW 20,000,000</span>
+                                        </li>
+                                        <li>
+                                            <p>김치프리미엄</p>
+                                            <span>1.3%</span>
+                                        </li>
+                                    </ul>
+                                </div>
 
-    <div class="container-fluid">
-	<div class="row">
-		<div class="col-md-12">
-			<h3 class="text-primary">
-				h3. Trading Volume Management
-			</h3>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-6">
-			<table class="table table-hover table-sm">
-				<thead>
-					<tr>
-						<th>
-							#
-						</th>
-						<th>
-							Price
-						</th>
-						<th>
-							Volume
-						</th>
-						<th>
-							Order
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>
-							110
-						</td>
-						<td>
-							1111
-						</td>
-						<td>
-							100
-						</td>
-						<td>
-							10
-						</td>
-					</tr>
-					<tr class="table-active">
-						<td>
-							100
-						</td>
-						<td>
-							2222
-						</td>
-						<td>
-							200
-						</td>
-						<td>
-							20
-						</td>
-					</tr>
-					<tr class="table-success">
-						<td>
-							90
-						</td>
-						<td>
-							3333
-						</td>
-						<td>
-							200
-						</td>
-						<td>
-							10
-						</td>
-					</tr>
-					<tr class="table-warning">
-						<td>
-							85
-						</td>
-						<td>
-							2222
-						</td>
-						<td>
-							100
-						</td>
-						<td>
-							11
-						</td>
-					</tr>
-					<tr class="table-danger">
-						<td>
-							80
-						</td>
-						<td>
-							1111
-						</td>
-						<td>
-							955
-						</td>
-						<td>
-							5
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		<div class="col-md-6">
-			<form role="form">
-				<div class="form-group">
+                            </div>
+                            <div class="content-right">
+                                <div>
+                                    <div class="right-title title01">
+                                        <h3>주문장(BTCUSDT)</h3>
+                                    </div>
+                                    <div class="right-content content01">
+                                        <table class="type-table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col" class="list-price">가격</th>
+                                                    <th scope="col" class="list-scale">규모</th>
+                                                    <th scope="col" class="list-total">총액</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr id="binance_sell_0">
+                                                    <th id="binance_sell_price_0" class="list-price up">1800.0</th>
+                                                    <th id="binance_sell_size_0" class="list-scale">0303</th>
+                                                    <th id="binance_sell_amount_0" class="list-total up">392,000</th>
+                                                </tr>
+                                                <tr id="binance_sell_1">
+                                                    <th id="binance_sell_price_1" class="list-price up">1800.0</th>
+                                                    <th id="binance_sell_size_1" class="list-scale">540,0303</th>
+                                                    <th id="binance_sell_amount_1" class="list-total up">392,000</th>
+                                                </tr>
+                                                <tr id="binance_sell_2">
+                                                    <th id="binance_sell_price_2" class="list-price up">1800.0</th>
+                                                    <th id="binance_sell_size_2" class="list-scale">0303</th>
+                                                    <th id="binance_sell_amount_2" class="list-total up">392,000</th>
+                                                </tr>
+                                                <tr id="binance_sell_3">
+                                                    <th id="binance_sell_price_3" class="list-price up">1800.0</th>
+                                                    <th id="binance_sell_size_3" class="list-scale">0303</th>
+                                                    <th id="binance_sell_amount_3" class="list-total up">392,000</th>
+                                                </tr>
+                                                <tr id="binance_sell_4">
+                                                    <th id="binance_sell_price_4" class="list-price up">1800.0</th>
+                                                    <th id="binance_sell_size_4" class="list-scale">0303</th>
+                                                    <th id="binance_sell_amount_4" class="list-total up">392,000</th>
+                                                </tr>
+                                                <tr id="binance_sell_5">
+                                                    <th id="binance_sell_price_5" class="list-price up">1800.0</th>
+                                                    <th id="binance_sell_size_5" class="list-scale">0303</th>
+                                                    <th id="binance_sell_amount_5" class="list-total up">392,000</th>
+                                                </tr>
+                                                <tr id="binance_sell_6">
+                                                    <th id="binance_sell_price_6" class="list-price up">1800.0</th>
+                                                    <th id="binance_sell_size_6" class="list-scale">0303</th>
+                                                    <th id="binance_sell_amount_6" class="list-total up">392,000</th>
+                                                </tr>
+                                            </tbody>
+                                            <tbody>
+                                                <tr>
+                                                    <th colspan="3" class="center">
+                                                        <p id="binance_trade_price_recent" class="up">123334.6</p>
+                                                        <p class="down"><span id="binance_price_mark">123000.53</span> / <span  id="binance_price_index">135665.64</span></p>
+                                                    </th>
+                                                </tr>
+                                            </tbody>
+                                            <tbody>
+                                                <tr id="binance_buy_0">
+                                                    <th id="binance_buy_price_0" class="list-price down">1800.0</th>
+                                                    <th id="binance_buy_size_0" class="list-scale">540,0303</th>
+                                                    <th id="binance_buy_amount_0" class="list-total down">392,000</th>
+                                                </tr>
+                                                <tr id="binance_buy_1">
+                                                    <th id="binance_buy_price_1" class="list-price down">1800.0</th>
+                                                    <th id="binance_buy_size_1" class="list-scale">540,0303</th>
+                                                    <th id="binance_buy_amount_1" class="list-total down">392,000</th>
+                                                </tr>
+                                                <tr id="binance_buy_2">
+                                                    <th id="binance_buy_price_2" class="list-price down">1800.0</th>
+                                                    <th id="binance_buy_size_2" class="list-scale">540,0303</th>
+                                                    <th id="binance_buy_amount_2" class="list-total down">392,000</th>
+                                                </tr>
+                                                <tr id="binance_buy_3">
+                                                    <th id="binance_buy_price_3" class="list-price down">1800.0</th>
+                                                    <th id="binance_buy_size_3" class="list-scale">540,0303</th>
+                                                    <th id="binance_buy_amount_3" class="list-total down">392,000</th>
+                                                </tr>
+                                                <tr id="binance_buy_4">
+                                                    <th id="binance_buy_price_4" class="list-price down">1800.0</th>
+                                                    <th id="binance_buy_size_4" class="list-scale">540,0303</th>
+                                                    <th id="binance_buy_amount_4" class="list-total down">392,000</th>
+                                                </tr>
+                                                <tr id="binance_buy_5">
+                                                    <th id="binance_buy_price_5" class="list-price down">1800.0</th>
+                                                    <th id="binance_buy_size_5" class="list-scale">540,0303</th>
+                                                    <th id="binance_buy_amount_5" class="list-total down">392,000</th>
+                                                </tr>
+                                                <tr id="binance_buy_6">
+                                                    <th id="binance_buy_price_6" class="list-price down">1800.0</th>
+                                                    <th id="binance_buy_size_6" class="list-scale">540,0303</th>
+                                                    <th id="binance_buy_amount_6" class="list-total down">392,000</th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="right-title title02">
+                                        <h3>최근거래(BTCUSDT)</h3>
+                                    </div>
+                                    <div class="right-content content02">
+                                        <table class="type-table">
+                                            <tbody>
+                                                <tr id="binance_trade_0">
+                                                    <th id="binance_trade_price_0" class="list-price up">1800.0</th>
+                                                    <th id="binance_trade_size_0" class="list-scale up">540,0303</th>
+                                                    <th id="binance_trade_timestamp_0" class="list-total up">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_1">
+                                                    <th id="binance_trade_price_1" class="list-price up">1800.0</th>
+                                                    <th id="binance_trade_size_1" class="list-scale up">0303</th>
+                                                    <th id="binance_trade_timestamp_1" class="list-total up">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_2">
+                                                    <th id="binance_trade_price_2" class="list-price up">1800.0</th>
+                                                    <th id="binance_trade_size_2" class="list-scale up">0303</th>
+                                                    <th id="binance_trade_timestamp_2" class="list-total up">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_3">
+                                                    <th id="binance_trade_price_3" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_3" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_3" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_4">
+                                                    <th id="binance_trade_price_4" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_4" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_4" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_5">
+                                                    <th id="binance_trade_price_5" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_5" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_5" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_6">
+                                                    <th id="binance_trade_price_6" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_6" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_6" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_7">
+                                                    <th id="binance_trade_price_7" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_7" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_7" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_8">
+                                                    <th id="binance_trade_price_8" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_8" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_8" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_9">
+                                                    <th id="binance_trade_price_9" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_9" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_9" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_10">
+                                                    <th id="binance_trade_price_10" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_10" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_10" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_11">
+                                                    <th id="binance_trade_price_11" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_11" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_11" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_12">
+                                                    <th id="binance_trade_price_12" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_12" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_12" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_13">
+                                                    <th id="binance_trade_price_13" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_13" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_13" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_14">
+                                                    <th id="binance_trade_price_14" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_14" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_14" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_15">
+                                                    <th id="binance_trade_price_15" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_15" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_15" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_16">
+                                                    <th id="binance_trade_price_16" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_16" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_16" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_17">
+                                                    <th id="binance_trade_price_17" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_17" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_17" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_18">
+                                                    <th id="binance_trade_price_18" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_18" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_18" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_19">
+                                                    <th id="binance_trade_price_19" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_19" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_19" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_20">
+                                                    <th id="binance_trade_price_20" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_20" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_20" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_21">
+                                                    <th id="binance_trade_price_21" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_21" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_21" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_22">
+                                                    <th id="binance_trade_price_22" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_22" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_22" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_23">
+                                                    <th id="binance_trade_price_23" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_23" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_23" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_24">
+                                                    <th id="binance_trade_price_24" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_24" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_24" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_25">
+                                                    <th id="binance_trade_price_25" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_25" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_25" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_26">
+                                                    <th id="binance_trade_price_26" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_26" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_26" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_27">
+                                                    <th id="binance_trade_price_27" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_27" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_27" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_28">
+                                                    <th id="binance_trade_price_28" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_28" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_28" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_29">
+                                                    <th id="binance_trade_price_29" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_29" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_29" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_30">
+                                                    <th id="binance_trade_price_30" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_30" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_30" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_31">
+                                                    <th id="binance_trade_price_31" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_31" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_31" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_32">
+                                                    <th id="binance_trade_price_32" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_32" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_32" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_33">
+                                                    <th id="binance_trade_price_33" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_33" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_33" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_34">
+                                                    <th id="binance_trade_price_34" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_34" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_34" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_35">
+                                                    <th id="binance_trade_price_35" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_35" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_35" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_36">
+                                                    <th id="binance_trade_price_36" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_36" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_36" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_37">
+                                                    <th id="binance_trade_price_37" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_37" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_37" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_38">
+                                                    <th id="binance_trade_price_38" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_38" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_38" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_39">
+                                                    <th id="binance_trade_price_39" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_49" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_39" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_40">
+                                                    <th id="binance_trade_price_40" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_40" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_40" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_41">
+                                                    <th id="binance_trade_price_41" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_41" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_41" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_42">
+                                                    <th id="binance_trade_price_42" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_42" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_42" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_43">
+                                                    <th id="binance_trade_price_43" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_43" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_43" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_44">
+                                                    <th id="binance_trade_price_44" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_44" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_44" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_45">
+                                                    <th id="binance_trade_price_45" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_45" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_45" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_46">
+                                                    <th id="binance_trade_price_46" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_46" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_46" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_47">
+                                                    <th id="binance_trade_price_47" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_47" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_47" class="list-total down">09:11:00 B</th>
+                                                </tr>
+                                                <tr id="binance_trade_48">
+                                                    <th id="binance_trade_price_48" class="list-price down">1800.0</th>
+                                                    <th id="binance_trade_size_48" class="list-scale down">20.303</th>
+                                                    <th id="binance_trade_timestamp_48" class="list-total down">09:11:00 B</th>
+                                                </tr>
 
-					<label for="exampleInputEmail1">
-						Email address
-					</label>
-					<input type="email" class="form-control" id="exampleInputEmail1">
-				</div>
-				<div class="form-group">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Binance Area End -->
+                        <h1>End of File</h1>
 
-					<label for="exampleInputPassword1">
-						Password
-					</label>
-					<input type="password" class="form-control" id="exampleInputPassword1">
-				</div>
-				<div class="form-group">
+<script>
 
-					<label for="exampleInputFile">
-						File input
-					</label>
-					<input type="file" class="form-control-file" id="exampleInputFile">
-					<p class="help-block">
-						Example block-level help text here.
-					</p>
-				</div>
-				<div class="checkbox">
+	function init() {
+		//binance 웹소켓 Start 및  UI 영역 초기화
+		console.log("function init executed successfully");
+		//doInitBinanceOrderBook();
+		doOpenBinanceOrderbook();
+		//doOpenBinanceTrade();
+		//doOpenBinancePrice();
+	}
+    init();
 
-					<label>
-						<input type="checkbox"> Check me out
-					</label>
-				</div>
-				<button type="submit" class="btn btn-primary">
-					Submit
-				</button>
-			</form>
-		</div>
-	</div>
-</div>
-
+    _binance_orderbook_init
+</script>
 {% endblock %}

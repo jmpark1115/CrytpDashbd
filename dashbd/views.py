@@ -8,4 +8,4 @@ def index(request):
 
 def info(request):
     print('information.html called')
-    return render(request, 'dashbd/information.html')
+    return render(request, 'dashbd/information2.html')
