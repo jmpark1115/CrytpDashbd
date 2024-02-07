@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block script %}
+{% endblock %}
+
+{% block content %}
+<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'js/tether.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script>
+      console.log('okk function init executed successfully');
+      const GET_TIME_OUT = 30;
+      const POST_TIME_OUT = 60;
+      const API_URL = 'https://www.okx.com'
+
+      var _objCheckOkxSession;
+
+      function doOpenOkxRestApi() {
+        if (_objCheckOkxSession == null) {
+        } else {
+            clearInterval(_objCheckOkxSession);
+        }
+        _objCheckOkxSession = setInterval(getOkxInstruments, 5000)
+      }
+
+      function getOkxInstruments() {
+        //GET /api/v5/public/instruments
+        console.log('getOkxInstruments called');
+        const path = '/api/v5/public/instruments';
+        $.ajax({
+            async: true,
+            url: API_URL + path,
+            type: 'GET',
+            data: {
+                 'instType': 'OPTION',
+                 'uly' : 'BTC-USD'
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log('success_' + response.data);
+            },
+            error: function(response, status, err) {
+                console.log('error_' + status);
+            },
+        }); //ajax
+      } // getOkxInstruments
+
+doOpenOkxRestApi();
+
+</script>
+{% endblock %}
