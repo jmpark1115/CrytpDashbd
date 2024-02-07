@@ -38,7 +38,12 @@
             },
             dataType: 'json',
             success: function(response) {
-                console.log('success_' + response.data);
+                console.log('success_' + response.code);
+                let insts = response.data;
+                for(let i=0; i<insts.length; i++) {
+                    console.log('insts_' + insts[i]['instId'] + '_' + insts[i]['instType']);
+                    break;
+                }
             },
             error: function(response, status, err) {
                 console.log('error_' + status);
