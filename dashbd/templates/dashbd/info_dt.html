@@ -14,6 +14,7 @@
 <script src="{% static 'js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'js/dataTables.buttons.min.js' %}"></script>
 <script src="{% static 'js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'js/okx_api.js' %}"></script>
 {% endblock %}
 
 
@@ -72,106 +73,52 @@
 <script>
 // 참고 문헌 https://datatables.net/
 
-$(document).ready(function() {
-      var Tickers = {
-        'okx': {
-          'btc': {
-            '240217': {
-              '45000': {
-                'C': {'askPrice': 110, 'askQty': 10, 'bidPrice': 100, 'bidQty': 320, 'diff': 10, 'remainDate': '45'},
-                'P': {'askPrice': 105, 'askQty': 10, 'bidPrice': 101, 'bidQty': 320, 'diff': 20, 'remainDate': '50'},
-              }
-            }
-          },
-          'eth': {
-            '240217': {
-              '46000': {
-                'C': {'askPrice': 111, 'askQty': 10, 'bidPrice': 100, 'bidQty': 320, 'diff': 30, 'remainDate': '40'},
-                'P': {'askPrice': 115, 'askQty': 10, 'bidPrice': 101, 'bidQty': 320, 'diff': 40, 'remainDate': '51'},
-              }
-            }
-          }
-        },
-        'binance': {
-          'btc': {
-            '240217': {
-              '47000': {
-                'C': {'askPrice': 111, 'askQty': 10, 'bidPrice': 100, 'bidQty': 320, 'diff': 5, 'remainDate': '49'},
-                'P': {'askPrice': 115, 'askQty': 10, 'bidPrice': 101, 'bidQty': 320, 'diff': 15, 'remainDate': '59'},
-              }
-            }
-          },
-          'eth': {
-            '240217': {
-              '45000': {
-                'C': {'askPrice': 112, 'askQty': 10, 'bidPrice': 100, 'bidQty': 320, 'diff': 35, 'remainDate': '40'},
-                'P': {'askPrice': 100, 'askQty': 10, 'bidPrice': 101, 'bidQty': 320, 'diff': 45, 'remainDate': '51'},
-              }
-            }
-          }
-        },
-        'debis': {
-          'btc': {
-            '240219': {
-              '44000': {
-                'C': {'askPrice': 111, 'askQty': 10, 'bidPrice': 100, 'bidQty': 320, 'diff': 60, 'remainDate': '42'},
-                'P': {'askPrice': 101, 'askQty': 10, 'bidPrice': 101, 'bidQty': 320, 'diff': 30, 'remainDate': '53'},
-              }
-            }
-          },
-          'eth': {
-            '240219': {
-              '50000': {
-                'C': {'askPrice': 110, 'askQty': 10, 'bidPrice': 100, 'bidQty': 320, 'diff': 20, 'remainDate': '44'},
-                'P': {'askPrice': 115, 'askQty': 10, 'bidPrice': 101, 'bidQty': 320, 'diff': 10, 'remainDate': '54'},
-              }
-            }
-          }
-        },
-      };
-
+    $(document).ready(function() {
       // Initialize DataTable
       var table = $('#tickers-table').DataTable({
               responsive: true,
               orderMulti: true,
-              order : [[9, 'desc'],[10, 'asc']],
+              //order : [[9, 'desc'],[10, 'asc']],
       });
 
       // Populate expiration date select options
-      var expirationDates = [];
-      $.each(Tickers, function(exchange, coins) {
-        $.each(coins, function(coin, expirations) {
-          $.each(expirations, function(expiration, strikes) {
-            if (!expirationDates.includes(expiration)) {
-              expirationDates.push(expiration);
-              $('#expiration-date-select').append($('<option>', {
-                value: expiration,
-                text: expiration
-              }));
-            }
+      async function populateExpirationDates() {
+        const tickers = await fetchOptionTickers();
+        var expirationDates = [];
+        $.each(tickers, function(exchange, coins) {
+          $.each(coins, function(coin, expirations) {
+            $.each(expirations, function(expiration, _) {
+              if (!expirationDates.includes(expiration)) {
+                expirationDates.push(expiration);
+                $('#expiration-date-select').append($('<option>', {
+                  value: expiration,
+                  text: expiration
+                }));
+              }
+            });
           });
         });
-      });
+      }
 
-      // Reload button click handler
-      $('#reload-button').click(function() {
-        table.clear().draw();
-        populateTable(table);
-      });
-
-      // Populate table initially
-      populateTable(table);
+      async function fetchOptionTickers() {
+        var _tickers = {};
+        var tickers = await getOptionTickers();
+        _tickers['okx'] = tickers;
+        return _tickers;
+      }
 
       // Expiration date select change handler
+      var selectedExpiration = 'all';
       $('#expiration-date-select').change(function() {
-        var selectedExpiration = $(this).val();
+        selectedExpiration = $(this).val();
         table.clear().draw();
         populateTable(table, selectedExpiration);
       });
 
-      // Function to populate table based on selected expiration date
-      function populateTable(table, selectedExpiration = 'all') {
-        $.each(Tickers, function(exchange, coins) {
+      async function populateTable(table, selectedExpiration = 'all') {
+        const tickers = await fetchOptionTickers();
+        table.clear().draw();
+        $.each(tickers, function(exchange, coins) {
           $.each(coins, function(coin, expirations) {
             $.each(expirations, function(expiration, strikes) {
               if (selectedExpiration === 'all' || selectedExpiration === expiration) {
@@ -197,7 +144,23 @@ $(document).ready(function() {
           });
         });
       }
+
+      async function startTickerInterval(timeInterval) {
+        await populateExpirationDates();
+        await populateTable(table, selectedExpiration);
+        setInterval(async () => {
+          await populateTable(table, selectedExpiration);
+        }, timeInterval);
+      }
+
+      // Reload button click handler
+      $('#reload-button').click(async function() {
+        await populateTable(table, selectedExpiration);
+      });
+
+      // Populate table initially
+      startTickerInterval(5000); // 5 seconds interval
     });
-</script>
+  </script>
 
 {% endblock %}
