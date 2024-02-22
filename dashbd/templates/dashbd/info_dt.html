@@ -20,7 +20,7 @@
 {% block content %}
 <body>
     <div class="wrap">
-        <h1>Trading History</h1>
+        <h1>Option Premium Dashboard</h1>
         <form>
                 <div class="form-group" id="date_range">
                     <label for="date_range" >
@@ -41,25 +41,30 @@
 
         </form>
 
-        <table id="myTable" class="display" style="width:100%;">
+        <label for="expiration-date-select">만기일 선택:</label>
+        <select id="expiration-date-select">
+        <option value="all" selected>전체</option>
+        </select>
+        <button id="reload-button">새로 고침</button>
+
+        <table id="tickers-table" class="display" style="width:100%;">
             <thead>
-                <tr>
-                    <th>순서</th>
-                    <th>행사가</th>
-                    <th>만기</th>
-                    <th>유형</th>
-                    <th data-orderable="false">매수</th>
-                    <th data-orderable="false">매도</th>
-                    <th data-orderable="false">차익</th>
-                    <th data-orderable="false">남은일자</th>
-                </tr>
+              <tr>
+                <th>거래소</th>
+                <th>코인 심볼</th>
+                <th>만기일</th>
+                <th>행사가</th>
+                <th>옵션 유형</th>
+                <th data-orderable="false">매도 호가</th>
+                <th data-orderable="false">매도 수량</th>
+                <th data-orderable="false">매수 호가</th>
+                <th data-orderable="false">매수 수량</th>
+                <th>차이</th>
+                <th>남은 만기일</th>
+              </tr>
             </thead>
-            <tfoot>
-<!--                <tr>-->
-<!--                    <th colspan="2" style="text-align:right;white-space:nowrap;">TOTAL : </th>-->
-<!--                    <th colspan="4" style="text-align:left;white-space:nowrap;"></th>-->
-<!--                </tr>-->
-            </tfoot>
+            <tbody>
+            </tbody>
         </table>
     </div>
 </body>
@@ -67,211 +72,132 @@
 <script>
 // 참고 문헌 https://datatables.net/
 
-const dataSet = [
-    [1, 2, 3, 4, 5, 6, 7, 8],
-    [1, 2, 3, 4, 5, 6, 7, 8],
-    [1, 2, 3, 4, 5, 6, 7, 8],
-    [1, 2, 3, 4, 5, 6, 7, 8],
-    [1, 2, 3, 4, 5, 6, 7, 8],
-
-];
-
-$('#refresh').click(function() {
-
-    var table = $('#myTable').DataTable();
-    table.destroy();
-    date_range = $("input[name='date_range']:checked").val();
-    if (typeof date_range == "undefined")
-        date_range = 'latest';
-
-    $.fn.dataTable.ext.search.push(
-        function(settings, data, dataIndex){
-            var min = Date.parse($('#fromDate').val());
-            var max = Date.parse($('#toDate').val());
-            var targetDate = Date.parse(data[5]);
-
-            if( (isNaN(min) && isNaN(max) ) ||
-                (isNaN(min) && targetDate <= max )||
-                ( min <= targetDate && isNaN(max) ) ||
-                ( targetDate >= min && targetDate <= max) ){
-                    return true;
+$(document).ready(function() {
+      var Tickers = {
+        'okx': {
+          'btc': {
+            '240217': {
+              '45000': {
+                'C': {'askPrice': 110, 'askQty': 10, 'bidPrice': 100, 'bidQty': 320, 'diff': 10, 'remainDate': '45'},
+                'P': {'askPrice': 105, 'askQty': 10, 'bidPrice': 101, 'bidQty': 320, 'diff': 20, 'remainDate': '50'},
+              }
             }
-            return false;
-        }
-    )
-
-    var table = $('#myTable').DataTable({
-        responsive: true,
-        orderMulti: true,
-        order : [[0, 'desc']],
-        "columns": [
-            {"data": "num"},
-            {"data": "strike"},
-            {"data": "deadline"},
-            {"data": "type"},
-            {"data": "bid"},
-            {"data": "ask"},
-            {"data": "margin"},
-            {"data": "days"}
-        ],
-        data: dataSet,
-        "language": {
-            "emptyTable": "데이터가 없어요.",
-            "lengthMenu": "페이지당 _MENU_ 개씩 보기",
-            "info": "현재 _START_ - _END_ / _TOTAL_건",
-            "infoEmpty": "데이터 없음",
-            "infoFiltered": "( _MAX_건의 데이터에서 필터링됨 )",
-            "search": "에서 검색: ",
-            "zeroRecords": "일치하는 데이터가 없어요.",
-            "loadingRecords": "로딩중...",
-            "processing":     "잠시만 기다려 주세요...",
-            "paginate": {
-                "next": "다음",
-                "previous": "이전"
+          },
+          'eth': {
+            '240217': {
+              '46000': {
+                'C': {'askPrice': 111, 'askQty': 10, 'bidPrice': 100, 'bidQty': 320, 'diff': 30, 'remainDate': '40'},
+                'P': {'askPrice': 115, 'askQty': 10, 'bidPrice': 101, 'bidQty': 320, 'diff': 40, 'remainDate': '51'},
+              }
             }
+          }
         },
-        /* Footer에 금액총합 구하기,
-         * filtered data 총합만 계산하도록 함.*/
-        "footerCallback":function(){
-            var api = this.api(), data;
-            var result = 0;
-            api.column(7, {search:'applied'}).data().each(function(data,index){
-                result += parseFloat(data);
+        'binance': {
+          'btc': {
+            '240217': {
+              '47000': {
+                'C': {'askPrice': 111, 'askQty': 10, 'bidPrice': 100, 'bidQty': 320, 'diff': 5, 'remainDate': '49'},
+                'P': {'askPrice': 115, 'askQty': 10, 'bidPrice': 101, 'bidQty': 320, 'diff': 15, 'remainDate': '59'},
+              }
+            }
+          },
+          'eth': {
+            '240217': {
+              '45000': {
+                'C': {'askPrice': 112, 'askQty': 10, 'bidPrice': 100, 'bidQty': 320, 'diff': 35, 'remainDate': '40'},
+                'P': {'askPrice': 100, 'askQty': 10, 'bidPrice': 101, 'bidQty': 320, 'diff': 45, 'remainDate': '51'},
+              }
+            }
+          }
+        },
+        'debis': {
+          'btc': {
+            '240219': {
+              '44000': {
+                'C': {'askPrice': 111, 'askQty': 10, 'bidPrice': 100, 'bidQty': 320, 'diff': 60, 'remainDate': '42'},
+                'P': {'askPrice': 101, 'askQty': 10, 'bidPrice': 101, 'bidQty': 320, 'diff': 30, 'remainDate': '53'},
+              }
+            }
+          },
+          'eth': {
+            '240219': {
+              '50000': {
+                'C': {'askPrice': 110, 'askQty': 10, 'bidPrice': 100, 'bidQty': 320, 'diff': 20, 'remainDate': '44'},
+                'P': {'askPrice': 115, 'askQty': 10, 'bidPrice': 101, 'bidQty': 320, 'diff': 10, 'remainDate': '54'},
+              }
+            }
+          }
+        },
+      };
+
+      // Initialize DataTable
+      var table = $('#tickers-table').DataTable({
+              responsive: true,
+              orderMulti: true,
+              order : [[9, 'desc'],[10, 'asc']],
+      });
+
+      // Populate expiration date select options
+      var expirationDates = [];
+      $.each(Tickers, function(exchange, coins) {
+        $.each(coins, function(coin, expirations) {
+          $.each(expirations, function(expiration, strikes) {
+            if (!expirationDates.includes(expiration)) {
+              expirationDates.push(expiration);
+              $('#expiration-date-select').append($('<option>', {
+                value: expiration,
+                text: expiration
+              }));
+            }
+          });
+        });
+      });
+
+      // Reload button click handler
+      $('#reload-button').click(function() {
+        table.clear().draw();
+        populateTable(table);
+      });
+
+      // Populate table initially
+      populateTable(table);
+
+      // Expiration date select change handler
+      $('#expiration-date-select').change(function() {
+        var selectedExpiration = $(this).val();
+        table.clear().draw();
+        populateTable(table, selectedExpiration);
+      });
+
+      // Function to populate table based on selected expiration date
+      function populateTable(table, selectedExpiration = 'all') {
+        $.each(Tickers, function(exchange, coins) {
+          $.each(coins, function(coin, expirations) {
+            $.each(expirations, function(expiration, strikes) {
+              if (selectedExpiration === 'all' || selectedExpiration === expiration) {
+                $.each(strikes, function(strike, options) {
+                  $.each(options, function(optionType, optionData) {
+                    table.row.add([
+                      exchange,
+                      coin,
+                      expiration,
+                      strike,
+                      optionType,
+                      optionData.askPrice,
+                      optionData.askQty,
+                      optionData.bidPrice,
+                      optionData.bidQty,
+                      optionData.diff,
+                      optionData.remainDate
+                    ]).draw(false);
+                  });
+                });
+              }
             });
-            $(api.column(3).footer()).html(result.toLocaleString()+'원');
-        },
-        dom : 'Blfrtip',
-        buttons:[{
-			extend:'csvHtml5',
-			text: 'Export CSV',
-			footer: true,
-			bom: true,
-			className: 'exportCSV'
-		}]
+          });
+        });
+      }
     });
-
-    /* Column별 검색기능 추가 */
-    $('#myTable_filter').prepend('<select id="select"></select>');
-    $('#myTable > thead > tr').children().each(function (indexInArray, valueOfElement) {
-        $('#select').append('<option>'+valueOfElement.innerHTML+'</option>');
-    });
-
-    $('.dataTables_filter input').unbind().bind('keyup', function () {
-        var colIndex = document.querySelector('#select').selectedIndex;
-        table.column(colIndex).search(this.value).draw();
-    });
-
-    /* 날짜검색 이벤트 리바인딩 */
-    $('#myTable_filter').prepend('<input type="text" id="toDate" placeholder="yyyy-MM-dd"> ');
-    $('#myTable_filter').prepend('<input type="text" id="fromDate" placeholder="yyyy-MM-dd">~');
-    $('#toDate, #fromDate').unbind().bind('keyup',function(){
-        table.draw();
-    })
-
-});
-
-$(document).ready(function () {
-
-    date_range = $("input[name='date_range']:checked").val();
-    if (typeof date_range == "undefined")
-        date_range = 'latest';
-
-    $.fn.dataTable.ext.search.push(
-        function(settings, data, dataIndex){
-            var min = Date.parse($('#fromDate').val());
-            var max = Date.parse($('#toDate').val());
-            var targetDate = Date.parse(data[5]);
-
-            if( (isNaN(min) && isNaN(max) ) ||
-                (isNaN(min) && targetDate <= max )||
-                ( min <= targetDate && isNaN(max) ) ||
-                ( targetDate >= min && targetDate <= max) ){
-                    return true;
-            }
-            return false;
-        }
-    )
-
-    var table = $('#myTable').DataTable({
-        responsive: true,
-        orderMulti: true,
-        //order : [[0, 'desc']],
-        /*"columns": [
-            {"data": "num"},
-            {"data": "strike"},
-            {"data": "deadline"},
-            {"data": "type"},
-            {"data": "bid"},
-            {"data": "ask"},
-            {"data": "margin"},
-            {"data": "days"}
-        ],
-        */
-        "columns": [
-            {title: "num"},
-            {title: "strike"},
-            {title: "deadline"},
-            {title: "type"},
-            {title: "bid"},
-            {title: "ask"},
-            {title: "margin"},
-            {title: "days"}
-        ],
-
-        data : dataSet,
-        "language": {
-            "emptyTable": "데이터가 없어요.",
-            "lengthMenu": "페이지당 _MENU_ 개씩 보기",
-            "info": "현재 _START_ - _END_ / _TOTAL_건",
-            "infoEmpty": "데이터 없음",
-            "infoFiltered": "( _MAX_건의 데이터에서 필터링됨 )",
-            "search": "에서 검색: ",
-            "zeroRecords": "일치하는 데이터가 없어요.",
-            "loadingRecords": "로딩중...",
-            "processing":     "잠시만 기다려 주세요...",
-            "paginate": {
-                "next": "다음",
-                "previous": "이전"
-            }
-        },
-        /* Footer에 금액총합 구하기,
-         * filtered data 총합만 계산하도록 함.*/
-        "footerCallback":function(){
-            var api = this.api(), data;
-            var result = 0;
-            api.column(7, {search:'applied'}).data().each(function(data,index){
-                result += parseFloat(data);
-            });
-            $(api.column(3).footer()).html(result.toLocaleString()+'원');
-        },
-        dom : 'Blfrtip',
-        buttons:[{
-			extend:'csvHtml5',
-			text: 'Export CSV',
-			footer: true,
-			bom: true,
-			className: 'exportCSV'
-		}]
-    });
-
-    /* Column별 검색기능 추가 */
-    $('#myTable_filter').prepend('<select id="select"></select>');
-    $('#myTable > thead > tr').children().each(function (indexInArray, valueOfElement) {
-        $('#select').append('<option>'+valueOfElement.innerHTML+'</option>');
-    });
-
-    $('.dataTables_filter input').unbind().bind('keyup', function () {
-        var colIndex = document.querySelector('#select').selectedIndex;
-        table.column(colIndex).search(this.value).draw();
-    });
-
-    /* 날짜검색 이벤트 리바인딩 */
-    $('#myTable_filter').prepend('<input type="text" id="toDate" placeholder="yyyy-MM-dd"> ');
-    $('#myTable_filter').prepend('<input type="text" id="fromDate" placeholder="yyyy-MM-dd">~');
-    $('#toDate, #fromDate').unbind().bind('keyup',function(){
-        table.draw();
-    })
-});
 </script>
 
 {% endblock %}
