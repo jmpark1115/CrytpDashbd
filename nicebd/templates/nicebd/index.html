@@ -181,11 +181,17 @@
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                DataTable Example
+                                Option DataTable
+                            </div>
+                            <div class="card-body">
+                                <label for="expiration-date-select">만기일 선택:</label>
+                                <select id="expiration-date-select">
+                                <option value="all" selected>전체</option>
+                                </select>
+                                <button id="reload-button">새로 고침</button>
                             </div>
                             <div class="card-body">
                                 <table id="tickers-table" class="display" style="width:100%">
-                                    <br><br>
                                     <thead>
                                         <tr>
                                             <th>Exchange</th>
