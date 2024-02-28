@@ -123,37 +123,37 @@
                         <div class="row">
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Primary Card</div>
+                                    <div class="card-body">BTC Primary</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+<!--                                        <a class="small text-white stretched-link" href="#">View Details</a>-->
+                                        <div class="small text-white">$ 50,000 <i class="fas fa-angle-right"></i> W 78,000,000</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-warning text-white mb-4">
-                                    <div class="card-body">Warning Card</div>
+                                    <div class="card-body">ETH Warning</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+<!--                                        <a class="small text-white stretched-link" href="#">View Details</a>-->
+                                        <div class="small text-white">$ 50,000 <i class="fas fa-angle-right"></i> W 78,000,000</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-success text-white mb-4">
-                                    <div class="card-body">Success Card</div>
+                                    <div class="card-body">SOL success</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+<!--                                        <a class="small text-white stretched-link" href="#">View Details</a>-->
+                                        <div class="small text-white">$ 50,000 <i class="fas fa-angle-right"></i> W 78,000,000</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-danger text-white mb-4">
-                                    <div class="card-body">Danger Card</div>
+                                    <div class="card-body">USDT danger</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+<!--                                        <a class="small text-white stretched-link" href="#">View Details</a>-->
+                                        <div class="small text-white">$ 50,000 <i class="fas fa-angle-right"></i> W 78,000,000</div>
                                     </div>
                                 </div>
                             </div>
@@ -191,12 +191,12 @@
                                 <button id="reload-button">새로 고침</button>
                             </div>
                             <div class="card-body">
-                                <table id="tickers-table" class="display" style="width:100%">
+                                <table id="tickers-table" class="display compact" width="100%">
                                     <thead>
                                         <tr>
-                                            <th>Exchange</th>
+                                            <th>Ex</th>
                                             <th>Symbol</th>
-                                            <th>Expiration</th>
+                                            <th>Expire</th>
                                             <th>Strike</th>
                                             <th>Type</th>
                                             <th data-orderable="false">SelPrice</th>
@@ -209,9 +209,9 @@
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th>Exchange</th>
+                                            <th>Ex</th>
                                             <th>Symbol</th>
-                                            <th>Expiration</th>
+                                            <th>Expira</th>
                                             <th>Strike</th>
                                             <th>Type</th>
                                             <th>SelPrice</th>
@@ -245,7 +245,10 @@
         </div>
 
 <script>
-// 참고 문헌 https://datatables.net/
+// https://datatables.net/
+// https://adminkit.io/?affiliate_id=558041811&ref=datatables
+// https://demo.adminkit.io/dashboard-crypto.html?theme=default
+
     $(document).ready(function() {
       // Initialize DataTable
       var table = $('#tickers-table').DataTable({
