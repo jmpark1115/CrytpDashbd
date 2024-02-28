@@ -18,6 +18,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('nicebd/', include(('nicebd.urls', 'nicebd'), namespace='nicebd')),
-    # path('nicebd/', include('nicebd.urls')),
+    path('nicebd/', include('nicebd.urls')),
     path('admin/', admin.site.urls),
 ]
