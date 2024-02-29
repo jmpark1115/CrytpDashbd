@@ -20,7 +20,7 @@
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="index.html">Option Premium Board</a>
+            <a class="navbar-brand ps-3" href="{% url 'nicebd:index' %}">Option Premium Board</a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
@@ -252,9 +252,13 @@
     $(document).ready(function() {
       // Initialize DataTable
       var table = $('#tickers-table').DataTable({
-              responsive: true,
-              orderMulti: true,
-              //order : [[9, 'desc'],[10, 'asc']],
+            responsive: true,
+            orderMulti: true,
+            //order : [[9, 'desc'],[10, 'asc']],
+            paging: true, // 페이징 활성화
+            // 페이지당 항목 수를 선택할 수 있는 메뉴로, 첫번째는 선택,두번째는 표시값
+            lengthMenu: [[10, 50, 100, -1], [10, 50, 100, "ALL"]],
+            pageLength: 10, // 기본 페이지당 항목 수 설정
       });
 
       // Populate expiration date select options
