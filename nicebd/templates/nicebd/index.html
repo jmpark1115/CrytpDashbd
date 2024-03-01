@@ -3,6 +3,7 @@
 {% load static %}
 
 {% block script %}
+<script src="{% static 'js/sampleData.js' %}"></script>
 <script src="{% static 'js/okx_api.js' %}"></script>
 <script src="{% static 'js/jquery.dataTables.js' %}"></script>
 <script src="{% static 'js/dataTables.responsive.min.js' %}"></script>
@@ -249,16 +250,15 @@
 // https://adminkit.io/?affiliate_id=558041811&ref=datatables
 // https://demo.adminkit.io/dashboard-crypto.html?theme=default
 
-    $(document).ready(function() {
+    $(document).ready(async function() {
       // Initialize DataTable
       var table = $('#tickers-table').DataTable({
-            responsive: true,
-            orderMulti: true,
-            //order : [[9, 'desc'],[10, 'asc']],
-            paging: true, // 페이징 활성화
-            // 페이지당 항목 수를 선택할 수 있는 메뉴로, 첫번째는 선택,두번째는 표시값
-            lengthMenu: [[10, 50, 100, -1], [10, 50, 100, "ALL"]],
-            pageLength: 10, // 기본 페이지당 항목 수 설정
+        responsive: true,
+        orderMulti: true,
+        order : [[3, 'asc'],[2, 'asc'], [4, 'asc']],
+        paging: true,
+        lengthMenu: [[10, 50, 100, -1], [10, 50, 100, "ALL"]],
+        pageLength: 50
       });
 
       // Populate expiration date select options
@@ -283,6 +283,9 @@
       async function fetchOptionTickers() {
         var _tickers = {};
         var tickers = await getOptionTickers();
+        //jmpark1115
+        //var tickers = await getOptionTickersTest();  // for test
+
         _tickers['okx'] = tickers;
         return _tickers;
       }
@@ -291,20 +294,21 @@
       var selectedExpiration = 'all';
       $('#expiration-date-select').change(function() {
         selectedExpiration = $(this).val();
-        table.clear().draw();
         populateTable(table, selectedExpiration);
       });
 
       async function populateTable(table, selectedExpiration = 'all') {
         const tickers = await fetchOptionTickers();
-        table.clear().draw();
+        var existingData = table.rows().data().toArray();
+        var newData = [];
+
         $.each(tickers, function(exchange, coins) {
           $.each(coins, function(coin, expirations) {
             $.each(expirations, function(expiration, strikes) {
               if (selectedExpiration === 'all' || selectedExpiration === expiration) {
                 $.each(strikes, function(strike, options) {
                   $.each(options, function(optionType, optionData) {
-                    table.row.add([
+                    newData.push([
                       exchange,
                       coin,
                       expiration,
@@ -316,13 +320,45 @@
                       optionData.bidQty,
                       optionData.diff,
                       optionData.remainDate
-                    ]).draw(false);
+                    ]);
                   });
                 });
               }
             });
           });
         });
+
+        // Add new data
+        $.each(newData, function(index, rowData) {
+          var existingRow = existingData.find(function(existingRowData) {
+            return JSON.stringify(existingRowData) === JSON.stringify(rowData);
+          });
+
+          if (!existingRow) {
+            table.row.add(rowData);
+          }
+        });
+
+        // Remove deleted data
+        var rowsToRemove = [];
+        table.rows().eq(0).each(function(index) {
+          var rowData = table.row(index).data();
+          var existingRow = newData.find(function(newRowData) {
+            return JSON.stringify(newRowData) === JSON.stringify(rowData);
+          });
+
+          if (!existingRow) {
+            rowsToRemove.push(index);
+          }
+        });
+
+        // Remove rows
+        rowsToRemove.reverse(); // Reverse the array to avoid index issues
+        rowsToRemove.forEach(function(index) {
+          table.row(index).remove().draw(false);
+        });
+
+        table.draw(false);
       }
 
       async function startTickerInterval(timeInterval) {
@@ -341,8 +377,7 @@
       // Populate table initially
       startTickerInterval(5000); // 5 seconds interval
     });
-
-</script>
+  </script>
 {% endblock %}
 
 
