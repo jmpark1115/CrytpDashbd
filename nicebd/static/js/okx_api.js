@@ -1,3 +1,4 @@
+// 사용하지 마시요.
       console.log('okk function init executed successfully');
       const GET_TIME_OUT = 30;
       const POST_TIME_OUT = 60;
@@ -116,6 +117,43 @@
         } //for
         return tickers;
       } //getOptionTickers
+
+    var xx = 1 ; // 초기값
+    var Tickers1 = {
+          'okx': {
+            'btc': {
+              '240217': {
+                '45000': {
+                  'C': {'askPrice': 110, 'askQty': 10, 'bidPrice': 100, 'bidQty': 320, 'diff': 10, 'remainDate': '45'},
+                  'P': {'askPrice': 105, 'askQty': 10, 'bidPrice': 101, 'bidQty': 320, 'diff': 20, 'remainDate': '50'},
+                }
+              }
+            },
+           }
+          }
+    var Tickers2 = {
+          'okx': {
+            'btc': {
+              '240217': {
+                '45000': {
+                  'C': {'askPrice': 110, 'askQty': 10, 'bidPrice': 100, 'bidQty': 320, 'diff': 10, 'remainDate': '45'},
+                  'P': {'askPrice': 123, 'askQty': 10, 'bidPrice': 101, 'bidQty': 320, 'diff': 20, 'remainDate': '50'},
+                }
+              }
+            },
+           }
+          }
+
+    async function getOptionTickersTest() {
+        x++;
+        let remainder = x % 5;
+        if (remainder == 0) {
+            console.log(`x: ${x}, remainder: ${remainder}`);
+            return Tickers1;
+        } else {
+            return Tickers2;
+        }
+    }
 
     async function main() {
       await getIndexTickers();
