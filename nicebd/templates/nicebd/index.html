@@ -255,7 +255,7 @@
       var table = $('#tickers-table').DataTable({
         responsive: true,
         orderMulti: true,
-        order : [[3, 'asc'],[2, 'asc'], [4, 'asc']],
+        //order : [[3, 'asc'],[2, 'asc'], [4, 'asc']],
         paging: true,
         lengthMenu: [[10, 50, 100, -1], [10, 50, 100, "ALL"]],
         pageLength: 50
@@ -280,13 +280,15 @@
         });
       }
 
-      async function fetchOptionTickers() {
+      function fetchOptionTickers() {
         var _tickers = {};
-        var tickers = await getOptionTickers();
+        //var tickers = await getOptionTickers();
         //jmpark1115
         //var tickers = await getOptionTickersTest();  // for test
 
-        _tickers['okx'] = tickers;
+        //_tickers['okx'] = tickers;
+
+        _tickers['okx'] = Tickers;
         return _tickers;
       }
 
@@ -371,13 +373,20 @@
 
       // Reload button click handler
       $('#reload-button').click(async function() {
+        await populateExpirationDates();
         await populateTable(table, selectedExpiration);
       });
 
+      _okx_ticker_init();
+      console.log("=== StartTicker ===");
+
       // Populate table initially
       startTickerInterval(5000); // 5 seconds interval
+
     });
   </script>
 {% endblock %}
 
-
+/*
+    {"event":"error","msg":"Wrong URL or channel:tickers,instId:BTC-USD-230609 doesn't exist. Please use the correct URL, channel and parameters referring to API document.","code":"60018","connId":"24ce02d2"}
+    */
