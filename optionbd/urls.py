@@ -19,5 +19,7 @@ from . import views
 app_name = 'optionbd'
 
 urlpatterns = [
-    path('', views.maker.main, name='main'),
+    path('', views.maker.index, name='index'),
+    path('index/', views.maker.index, name='index'),
+    path('index.html/', views.maker.index, name='index'),
 ]

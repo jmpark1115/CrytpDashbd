@@ -15,6 +15,7 @@ getcontext().prec = 10
 
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 
 try:
     # from exchange.binance     import Binance
@@ -110,6 +111,23 @@ class Handler(object):
         logger.debug(f"get_orderbook_info time elapsed: {time.time() - startTime: .2f}")
         return results
 
+    def seek_remainDates(self, given_date):
+        # 현재 날짜 가져오기 (GMT 시간 기준)
+        current_date = datetime.utcnow()
+        # 주어진 날짜의 연도 가져오기 (20YY 형식으로 가정)
+        given_year = int('20' + given_date[:2])
+        given_month = int(given_date[2:4])
+        given_day = int(given_date[4:6])
+
+        # 주어진 날짜로 datetime 객체 생성
+        given_datetime = datetime(given_year, given_month, given_day)
+        # 현재 날짜와 주어진 날짜 간의 차이 계산
+        difference = given_datetime - current_date
+        # 남은 일수 가져오기
+        # print(f"현재로부터 {difference.days}일이 남았습니다.")
+        return difference.days
+
+
     def seek_premium_exch(self, exs, exb, binance):
         '''
         # seek_premium_2 exchangers
@@ -117,10 +135,15 @@ class Handler(object):
         '''
         logger.debug('seek_premium_exch')
         exs_bid_price = dict()
+        exs_bid_qty = dict()
         exs_ask_price = dict()
+        exs_ask_qty = dict()
         exb_bid_price = dict()
-        exb_ask_price = dict()
-        marginInfo = list()
+        exb_bid_qty = dict()
+        exb_ask_price =dict()
+        exb_ask_qty = dict()
+        optionInfo = list()
+
         if exs and exb and binance:
             # my_dict1과 my_dict2의 키 값 추출
             exname_s = list(exs.keys())[0]
@@ -155,6 +178,10 @@ class Handler(object):
                         exs_ask_price[optionType] = exs_strike[optionType]['askPrice']
                         exb_bid_price[optionType] = exb_strike[optionType]['bidPrice']
                         exb_ask_price[optionType] = exb_strike[optionType]['askPrice']
+                        exs_bid_qty[optionType]   = exs_strike[optionType]['bidQty']
+                        exs_ask_qty[optionType]   = exs_strike[optionType]['askQty']
+                        exb_bid_qty[optionType]   = exb_strike[optionType]['bidQty']
+                        exb_ask_qty[optionType]   = exb_strike[optionType]['askQty']
                         margin = {
                             'exs': f'{exname_s}-{exname_b}',
                             'expire': expire_date,
@@ -162,12 +189,12 @@ class Handler(object):
                             'optionType': optionType,
                             'ask_price': exb_ask_price[optionType], # 매수거래소의 매도값
                             'bid_price': exs_bid_price[optionType], # 매도거래소의 매수값
-                            'ask_qty': 111,
-                            'bid_qty' : 222,
+                            'ask_qty': exb_ask_qty[optionType],
+                            'bid_qty': exs_bid_qty[optionType],
                             'diff' : float(D(exb_ask_price[optionType]) - D(exs_bid_price[optionType])), # margin
-                            'remainDate': 555,
+                            'remainDate': self.seek_remainDates(expire_date),
                         }
-                        marginInfo.append(margin)
+                        optionInfo.append(margin)
                     '''
                     # bybit put 매수 okx call 매도
                     conversion = self.cal_conversion(bybit_p_ask_price * self.binance.asks_price, okx_c_bid_price , strike)
@@ -183,7 +210,7 @@ class Handler(object):
                     self.alert_signal(reverisal,expire_date, '리버셜',
                                       f'Okx P 매도: {okx_p_bid_price} \n Bybit C 매수: {bybit_c_ask_price} \n행사가격 {strike} \n선물 : {self.binance.bids_price}')
                     '''
-            return marginInfo
+            return optionInfo
 
     def get_premium_info(self, orderbooks):
         '''
@@ -202,8 +229,8 @@ class Handler(object):
                     continue
                 ex_s = ex1
                 ex_b = ex2
-                result = self.seek_premium_exch(ex_s, ex_b, binance)
-                optionsInfo.append(result)
+                optionInfo = self.seek_premium_exch(ex_s, ex_b, binance)
+                optionsInfo.append(optionInfo)
         return optionsInfo
 
     def arbi_main(self):
@@ -219,19 +246,22 @@ class Handler(object):
 
         '''
         1. 동시 거래소 접근하여 orderbook 정보를 가져옴
-        2. 정보는 self.Options 에 저장
+        2. 정보는 optionsInfo 에 저장
         3. 2개 거래소씩 ask, bid 를 날짜별로 조사하여 정리
         '''
         if orderbooks:
             # {'okx': option4okx, 'byb': option4byb, ....}, 'eth': {}, }
             optionsInfo = self.get_premium_info(orderbooks)
             for op in optionsInfo:
-                logger.debug(f'optionsInfo_{op}_self.botname')
+                logger.debug(f'optionsInfo_{op}_{self.botname}')
+                for k, v in op[0].items():
+                    logger.debug(f'{k} : {v}')
+                return
         return
 
     def run_arbi(self):
-        if not self.dryrun:
-            time.sleep(random.randrange(1, 5))
+        # if not self.dryrun:
+        #     time.sleep(random.randrange(1, 5))
         while True:
             self.arbi_main()
         return
@@ -269,6 +299,12 @@ class Maker(object):
 
     def main(self, request):
         return HttpResponse('ok')
+
+    def index(self, request):
+        print('index.html called')
+        url = reverse('optionbd:index')
+        print(url)
+        return render(request, 'optionbd/index.html')
 
     def run(self):
         logger.debug('start run %d' % os.getpid())
