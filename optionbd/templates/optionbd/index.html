@@ -194,8 +194,8 @@
                                 <table id="tickers-table" class="display compact" width="100%">
                                     <thead>
                                         <tr>
-                                            <th>Ex</th>
                                             <th>Symbol</th>
+                                            <th>Exs</th>
                                             <th>Expire</th>
                                             <th>Strike</th>
                                             <th>Type</th>
@@ -209,8 +209,8 @@
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th>Ex</th>
                                             <th>Symbol</th>
+                                            <th>Exs</th>
                                             <th>Expira</th>
                                             <th>Strike</th>
                                             <th>Type</th>
@@ -254,7 +254,7 @@
       var table = $('#tickers-table').DataTable({
         responsive: true,
         orderMulti: true,
-        order : [[3, 'asc'],[2, 'asc'], [4, 'asc']],
+        //order : [[3, 'asc'],[2, 'asc'], [4, 'asc']],
         paging: true,
         lengthMenu: [[10, 50, 100, -1], [10, 50, 100, "ALL"]],
         pageLength: 50
@@ -264,52 +264,55 @@
       async function populateExpirationDates() {
         const tickers = await fetchOptionTickers();
         var expirationDates = [];
-        $.each(tickers, function(exchange, coins) {
-          $.each(coins, function(coin, expirations) {
-            $.each(expirations, function(expiration, _) {
-              if (!expirationDates.includes(expiration)) {
-                expirationDates.push(expiration);
-                $('#expiration-date-select').append($('<option>', {
-                  value: expiration,
-                  text: expiration
-                }));
-              }
-            });
-          });
+        $.each(tickers, function(index, ticker) {
+          if (!expirationDates.includes(ticker.expire)) {
+            expirationDates.push(ticker.expire);
+            $('#expiration-date-select').append($('<option>', {
+              value: ticker.expire,
+              text: ticker.expire
+            }));
+          }
         });
       }
 
-      async function getOptionTickers() {
-        console.log('getOptionTickers callled');
-        var OptionTickers = {};
-        debug:
-        var params = {
+        async function getOptionTickers() {
+          console.log('getOptionTickers called');
+          var OptionTickers = {};
+
+          var params = {
             'mode': 'ok',
             'symbol': 'btc',
-        };
-        $.ajax({
-            async: true,
-            type: 'POST',
-            data: {
+          };
+
+          try {
+            // Ajax 요청을 Promise 객체에 래핑
+            var response = await $.ajax({
+              async: true,
+              type: 'POST',
+              data: {
                 'csrfmiddlewaretoken' : '{{ csrf_token }}',
                 'bot' : 0,
                 'action' : 'apply',
                 'params'  : $.param(params),
-            },
-            url : "{% url 'optionbd:getoptionsinfo' %}",
-            dataType : "json",
-            success : function(response) {
-                if (response.result == 'success') {
-                    return response.data;
-                } else {
-                    console.log('response error');
-                }
-            },
-            error : function(error) {
-                    alert('error : ' + error);
+              },
+              url: "{% url 'optionbd:getoptionsinfo' %}",
+              dataType: "json",
+            });
+
+            // 응답이 성공했을 때 처리
+            if (response.result === 'success') {
+              OptionTickers = response.data;
+            } else {
+              console.log('response error');
             }
-        }); //ajax
-      } // getOptionTickers()
+          } catch (error) {
+            // 에러 핸들링
+            console.error('Error occurred:', error);
+            alert('error : ' + error);
+          }
+
+          return OptionTickers;
+        }
 
       async function fetchOptionTickers() {
         var startTime = new Date();
@@ -332,109 +335,23 @@
         console.time("[populateTable]");
         const tickers = await fetchOptionTickers();
         table.clear().draw();
-        /*
-        $.each(tickers, function(exchange, coins) {
-          $.each(coins, function(coin, expirations) {
-            $.each(expirations, function(expiration, strikes) {
-              if (selectedExpiration === 'all' || selectedExpiration === expiration) {
-                $.each(strikes, function(strike, options) {
-                  $.each(options, function(optionType, optionData) {
-                    table.row.add([
-                      exchange,
-                      coin,
-                      expiration,
-                      strike,
-                      optionType,
-                      optionData.askPrice,
-                      optionData.askQty,
-                      optionData.bidPrice,
-                      optionData.bidQty,
-                      optionData.diff,
-                      optionData.remainDate
-                    ]).draw(false);
-                  });
-                });
-              }
-            });
-          });
-        });
-        */
-        console.timeEnd("[populateTable]");
-      }
-
-      async function populateTable(table, selectedExpiration = 'all') {
-        console.time("[populateTable]");
-        const tickers = await fetchOptionTickers();
-        var existingData = table.rows().data().toArray();
-        var newData = [];
-
-        console.time("push");
-        $.each(tickers, function(exchange, coins) {
-          $.each(coins, function(coin, expirations) {
-            $.each(expirations, function(expiration, strikes) {
-              if (selectedExpiration === 'all' || selectedExpiration === expiration) {
-                $.each(strikes, function(strike, options) {
-                  $.each(options, function(optionType, optionData) {
-                    newData.push([
-                      exchange,
-                      coin,
-                      expiration,
-                      strike,
-                      optionType,
-                      optionData.askPrice,
-                      optionData.askQty,
-                      optionData.bidPrice,
-                      optionData.bidQty,
-                      optionData.diff,
-                      optionData.remainDate
-                    ]);
-                  });
-                });
-              }
-            });
-          });
-        });
-        console.timeEnd("push");
-
-        console.time("add new data");
-        // Add new data
-        $.each(newData, function(index, rowData) {
-          var existingRow = existingData.find(function(existingRowData) {
-            return JSON.stringify(existingRowData) === JSON.stringify(rowData);
-          });
-
-          if (!existingRow) {
-            table.row.add(rowData);
+        $.each(tickers, function(index, ticker) {
+        if (selectedExpiration === 'all' || ticker.expire === selectedExpiration) {
+            table.row.add([
+              ticker.coin,
+              ticker.exs,
+              ticker.expire,
+              ticker.strike,
+              ticker.optionType,
+              ticker.ask_price,
+              ticker.bid_price,
+              ticker.ask_qty,
+              ticker.bid_qty,
+              ticker.diff,
+              ticker.remainDate
+            ]).draw(false);
           }
         });
-        console.timeEnd("add new data");
-
-        console.time("remove delted data");
-        // Remove deleted data
-        var rowsToRemove = [];
-        table.rows().eq(0).each(function(index) {
-          var rowData = table.row(index).data();
-          var existingRow = newData.find(function(newRowData) {
-            return JSON.stringify(newRowData) === JSON.stringify(rowData);
-          });
-
-          if (!existingRow) {
-            rowsToRemove.push(index);
-          }
-        });
-
-        console.timeEnd("remove delted data");
-
-        console.time("remove rows");
-        // Remove rows
-        rowsToRemove.reverse(); // Reverse the array to avoid index issues
-        //rowsToRemove.forEach(function(index) {
-        //  table.row(index).remove().draw(false);
-        //});
-        table.rows(rowsToRemove).remove().draw(false);
-        console.timeEnd("remove rows");
-
-        table.draw(false);
         console.timeEnd("[populateTable]");
       } // end of populateTable
 
@@ -452,11 +369,10 @@
         await populateTable(table, selectedExpiration);
       });
 
-      //_okx_ticker_init();  // for socket streams
       console.log("=== StartTicker ===");
 
       // Populate table initially
-      //startTickerInterval(5000); // 5 seconds interval
+      startTickerInterval(5000); // 5 seconds interval
 
     });
   </script>
