@@ -304,7 +304,7 @@ $(document).ready(async function() {
 
         expirationDates.forEach(function(expireDate) {
             const checkboxHtml = `
-                <div class="form-check">
+                <div class="form-check form-check-inline">
                     <input class="form-check-input expiration-checkbox" type="checkbox" value="${expireDate}" id="expire-${expireDate}">
                     <label class="form-check-label" for="expire-${expireDate}">
                         ${expireDate}
@@ -315,14 +315,15 @@ $(document).ready(async function() {
         });
 
         // '전체' 선택 옵션 추가
-        container.prepend(`
-            <div class="form-check">
+        const allCheckboxHtml = `
+            <div class="form-check form-check-inline">
                 <input class="form-check-input expiration-checkbox" type="checkbox" value="ALL" id="expire-all" checked>
                 <label class="form-check-label" for="expire-all">
                     ALL
                 </label>
             </div>
-        `);
+        `;
+        container.prepend(allCheckboxHtml);
     }
 
     // 체크박스 변경 이벤트 핸들러
