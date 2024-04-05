@@ -340,14 +340,15 @@ $(document).ready(async function() {
 
     // 테이블 갱신 함수
     function updateTable(optionData) {
+        // OptionTickers가 유효하지 않으면 업데이트하지 않음
+        if (!(optionData && optionData.tickers.length > 0 &&
+           optionData.expirationDates && optionData.expirationDates.length>0)) {
+            return;
+        }
         const selectedExpiration = $('.expiration-checkbox:checked').map(function() {
             return this.value;
         }).get();
         console.log('selectedExpiration', selectedExpiration);
-        // OptionTickers가 유효하지 않으면 업데이트하지 않음
-        if ($.isEmptyObject(optionData)) {
-            return;
-        }
         table.clear();
 
         // 데이터 추가
@@ -383,16 +384,18 @@ $(document).ready(async function() {
 
     // 주기적으로 테이블 갱신
     async function startTickerInterval(timeInterval) {
-        await updateTable(); // 초기 테이블 갱신
+        optionData = await fetchOptionTickers();
+        await updateTable(optionData); // 주기적으로 테이블 갱신
         setInterval(async () => {
-            await updateTable(); // 주기적으로 테이블 갱신
+            optionData = await fetchOptionTickers();
+            await updateTable(optionData); // 주기적으로 테이블 갱신
         }, timeInterval);
     }
 
     populateExpirationCheckboxes(optionData.expirationDates); // 초기 체크박스 생성
     updateTable(optionData); // 초기 테이블 로드
     // 테이블 초기화
-    //startTickerInterval(5000); // 5초마다 갱신
+    startTickerInterval(5000); // 5초마다 갱신
 });
 </script>
 {% endblock %}
