@@ -255,7 +255,7 @@
       var table = $('#tickers-table').DataTable({
         responsive: true,
         orderMulti: true,
-        //order : [[3, 'asc'],[2, 'asc'], [4, 'asc']],
+        order : [[3, 'asc'],[2, 'asc'], [4, 'asc']],
         paging: true,
         lengthMenu: [[10, 50, 100, -1], [10, 50, 100, "ALL"]],
         pageLength: 50
@@ -280,15 +280,17 @@
         });
       }
 
-      function fetchOptionTickers() {
+      async function fetchOptionTickers() {
         var _tickers = {};
-        //var tickers = await getOptionTickers();
+        var startTime = new Date();
+        var tickers = await getOptionTickers();
         //jmpark1115
         //var tickers = await getOptionTickersTest();  // for test
+        var endTime = new Date();
+        console.log("==> 구간소요시간_" + (endTime - startTime) + "ms");
 
-        //_tickers['okx'] = tickers;
-
-        _tickers['okx'] = Tickers;
+        //_tickers['okx'] = Tickers;
+        _tickers['okx'] = tickers;
         return _tickers;
       }
 
@@ -299,11 +301,45 @@
         populateTable(table, selectedExpiration);
       });
 
+      async function _populateTable(table, selectedExpiration = 'all') {
+        console.time("[populateTable]");
+        const tickers = await fetchOptionTickers();
+        table.clear().draw();
+        $.each(tickers, function(exchange, coins) {
+          $.each(coins, function(coin, expirations) {
+            $.each(expirations, function(expiration, strikes) {
+              if (selectedExpiration === 'all' || selectedExpiration === expiration) {
+                $.each(strikes, function(strike, options) {
+                  $.each(options, function(optionType, optionData) {
+                    table.row.add([
+                      exchange,
+                      coin,
+                      expiration,
+                      strike,
+                      optionType,
+                      optionData.askPrice,
+                      optionData.askQty,
+                      optionData.bidPrice,
+                      optionData.bidQty,
+                      optionData.diff,
+                      optionData.remainDate
+                    ]).draw(false);
+                  });
+                });
+              }
+            });
+          });
+        });
+        console.timeEnd("[populateTable]");
+      }
+
       async function populateTable(table, selectedExpiration = 'all') {
+        console.time("[populateTable]");
         const tickers = await fetchOptionTickers();
         var existingData = table.rows().data().toArray();
         var newData = [];
 
+        console.time("push");
         $.each(tickers, function(exchange, coins) {
           $.each(coins, function(coin, expirations) {
             $.each(expirations, function(expiration, strikes) {
@@ -329,7 +365,9 @@
             });
           });
         });
+        console.timeEnd("push");
 
+        console.time("add new data");
         // Add new data
         $.each(newData, function(index, rowData) {
           var existingRow = existingData.find(function(existingRowData) {
@@ -340,7 +378,9 @@
             table.row.add(rowData);
           }
         });
+        console.timeEnd("add new data");
 
+        console.time("remove delted data");
         // Remove deleted data
         var rowsToRemove = [];
         table.rows().eq(0).each(function(index) {
@@ -354,14 +394,20 @@
           }
         });
 
+        console.timeEnd("remove delted data");
+
+        console.time("remove rows");
         // Remove rows
         rowsToRemove.reverse(); // Reverse the array to avoid index issues
-        rowsToRemove.forEach(function(index) {
-          table.row(index).remove().draw(false);
-        });
+        //rowsToRemove.forEach(function(index) {
+        //  table.row(index).remove().draw(false);
+        //});
+        table.rows(rowsToRemove).remove().draw(false);
+        console.timeEnd("remove rows");
 
         table.draw(false);
-      }
+        console.timeEnd("[populateTable]");
+      } // end of populateTable
 
       async function startTickerInterval(timeInterval) {
         await populateExpirationDates();
@@ -377,7 +423,7 @@
         await populateTable(table, selectedExpiration);
       });
 
-      _okx_ticker_init();
+      //_okx_ticker_init();  // for socket streams
       console.log("=== StartTicker ===");
 
       // Populate table initially
