@@ -14,7 +14,8 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-print('base_dir : ', BASE_DIR)
+print(f'common base_dir : {BASE_DIR}')
+print(f'Start {os.getpid()}')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -39,8 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sites',
-    'dashbd',
-    'nicebd',
+    'optionbd',
 ]
 
 MIDDLEWARE = [
@@ -111,13 +111,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ko-kr'
 
-TIME_ZONE = 'ASIA/Seoul'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False
+USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -131,6 +131,9 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 print('static root ', STATIC_ROOT)
 
-LOGIN_REDIRECT_URL = "/dashbd"
+# Goolge reCapctcha
+GOOGLE_RECAPTCHA_SECRET_KEY = '6Ld5yeYUAAAAAKuhhdoWzPHndKvxPZwbm-DYa6Xo'
+
+LOGIN_REDIRECT_URL = "/"
 
 SITE_ID = 1
