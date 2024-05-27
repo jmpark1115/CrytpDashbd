@@ -14,3 +14,7 @@ def info(request):
 def info_okx(request):
     print('info okx called')
     return render(request, 'dashbd/info_okx.html')
+
+def info_dt(request):
+    print('info dataTable called')
+    return render(request, 'dashbd/info_dt.html')
