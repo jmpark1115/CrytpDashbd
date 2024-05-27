@@ -257,6 +257,8 @@ $(document).ready(async function() {
         order: [[2, 'asc'], [3, 'asc']],
     });
 
+    var optionData = await fetchOptionTickers(); // 페이지 로드 시 한 번만 호출
+
     // 비동기로 데이터 및 만료일자 가져오기
     async function fetchOptionTickers(expireDateUpdate=true) {
         var optionData = {};
@@ -295,24 +297,13 @@ $(document).ready(async function() {
         return optionData;
     }
 
-    // 만료일 체크박스 생성 및 업데이트 함수
+    // 만료일 체크박스 생성 함수
     function populateExpirationCheckboxes(expirationDates) {
+        console.log(expirationDates)
         const container = $('#expiration-date-checkboxes');
         container.empty(); // 기존 체크박스 제거
 
-        // '전체' 선택 옵션 무조건 추가
-        const allCheckboxHtml = `
-            <div class="form-check form-check-inline">
-                <input class="form-check-input expiration-checkbox" type="checkbox" value="ALL" id="expire-all" checked>
-                <label class="form-check-label" for="expire-all">
-                    ALL
-                </label>
-            </div>
-        `;
-        container.prepend(allCheckboxHtml);
-
         expirationDates.forEach(function(expireDate) {
-            // 새로운 만료일만 추가
             const checkboxHtml = `
                 <div class="form-check form-check-inline">
                     <input class="form-check-input expiration-checkbox" type="checkbox" value="${expireDate}" id="expire-${expireDate}">
@@ -323,6 +314,17 @@ $(document).ready(async function() {
             `;
             container.append(checkboxHtml);
         });
+
+        // '전체' 선택 옵션 추가
+        const allCheckboxHtml = `
+            <div class="form-check form-check-inline">
+                <input class="form-check-input expiration-checkbox" type="checkbox" value="ALL" id="expire-all" checked>
+                <label class="form-check-label" for="expire-all">
+                    ALL
+                </label>
+            </div>
+        `;
+        container.prepend(allCheckboxHtml);
     }
 
     // 체크박스 변경 이벤트 핸들러
@@ -378,19 +380,20 @@ $(document).ready(async function() {
 
     // Reload button click handler
     $('#reload-button').click(async function() {
-        optionData = await fetchOptionTickers();
+        optionData = await fetchOptionTickers(expireDateUpdate=false);
         updateTable(optionData);
     });
 
     // 주기적으로 테이블 갱신
     async function startTickerInterval(timeInterval) {
+        //optionData = await fetchOptionTickers();
+        //await updateTable(optionData); // 주기적으로 테이블 갱신
         setInterval(async () => {
             optionData = await fetchOptionTickers();
-            updateTable(optionData); // 주기적으로 테이블 갱신
+            await updateTable(optionData); // 주기적으로 테이블 갱신
         }, timeInterval);
     }
 
-    var optionData = await fetchOptionTickers(); // 페이지 로드 시 한 번만 호출
     populateExpirationCheckboxes(optionData.expirationDates); // 초기 체크박스 생성
     updateTable(optionData); // 초기 테이블 로드
     // 테이블 초기화

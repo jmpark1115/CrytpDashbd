@@ -184,11 +184,11 @@
                                 Option DataTable
                             </div>
                             <div class="card-body">
-                                <label for="expiration-date-select">ExpireDates:</label>
-                                <div id="expiration-date-checkboxes">
-                                <!--  checkbox added     -->
-                                </div>
-                                <button id="reload-button">Reload</button>
+                                <label for="expiration-date-select">만기일 선택:</label>
+                                <select id="expiration-date-select">
+                                <option value="all" selected>전체</option>
+                                </select>
+                                <button id="reload-button">새로 고침</button>
                             </div>
                             <div class="card-body">
                                 <table id="tickers-table" class="display compact" width="100%">
@@ -250,15 +250,11 @@
 // https://demo.adminkit.io/dashboard-crypto.html?theme=default
 
 $(document).ready(async function() {
-    var table = $('#tickers-table').DataTable({
-        paging: false, // 페이징 사용 안함.
-        responsive: true,
-        orderMulti: true,
-        order: [[2, 'asc'], [3, 'asc']],
-    });
+    var table = $('#tickers-table').DataTable();
+    var selectedExpiration = 'all'; // 초기값: 전체 데이터
 
     // 비동기로 데이터 및 만료일자 가져오기
-    async function fetchOptionTickers(expireDateUpdate=true) {
+    async function fetchOptionTickers() {
         var optionData = {};
         var params = {
             'mode': 'ok',
@@ -281,10 +277,6 @@ $(document).ready(async function() {
             if (response.result === 'success') {
                 optionData.tickers = response.data;
                 optionData.expirationDates = response.expireDate; // 만료일자 가져오기
-                console.log('expireDateUpdated_' + expireDateUpdate);
-                if(expireDateUpdate) {
-                    populateExpirationCheckboxes(response.expireDate); // 체크박스 생성
-                };
             } else {
                 console.log('response error');
             }
@@ -292,69 +284,28 @@ $(document).ready(async function() {
             console.error('Error occurred:', error);
             alert('error : ' + error);
         }
+
         return optionData;
     }
 
-    // 만료일 체크박스 생성 및 업데이트 함수
-    function populateExpirationCheckboxes(expirationDates) {
-        const container = $('#expiration-date-checkboxes');
-        container.empty(); // 기존 체크박스 제거
-
-        // '전체' 선택 옵션 무조건 추가
-        const allCheckboxHtml = `
-            <div class="form-check form-check-inline">
-                <input class="form-check-input expiration-checkbox" type="checkbox" value="ALL" id="expire-all" checked>
-                <label class="form-check-label" for="expire-all">
-                    ALL
-                </label>
-            </div>
-        `;
-        container.prepend(allCheckboxHtml);
-
-        expirationDates.forEach(function(expireDate) {
-            // 새로운 만료일만 추가
-            const checkboxHtml = `
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input expiration-checkbox" type="checkbox" value="${expireDate}" id="expire-${expireDate}">
-                    <label class="form-check-label" for="expire-${expireDate}">
-                        ${expireDate}
-                    </label>
-                </div>
-            `;
-            container.append(checkboxHtml);
-        });
-    }
-
-    // 체크박스 변경 이벤트 핸들러
-    $('#expiration-date-checkboxes').on('change', '.expiration-checkbox', function() {
-        if (this.value === 'ALL') {
-            // '전체' 선택 시 다른 체크박스 해제
-            $('.expiration-checkbox').not(this).prop('checked', false);
-        } else {
-            // '전체'를 제외한 다른 선택 시 '전체' 해제
-            $('#expire-all').prop('checked', false);
-        }
-        updateTable(optionData); // 테이블 업데이트 함수 호출
-    });
-
     // 테이블 갱신 함수
-    function updateTable(optionData) {
+    async function updateTable() {
+        const optionData = await fetchOptionTickers();
+        const tickers = optionData.tickers;
+        const expirationDates = optionData.expirationDates;
+
         // OptionTickers가 유효하지 않으면 업데이트하지 않음
-        if (!(optionData && optionData.tickers.length > 0 &&
-           optionData.expirationDates && optionData.expirationDates.length>0)) {
-            console.log("OptionTickers Invalid")
+        if ($.isEmptyObject(tickers)) {
             return;
         }
-        const selectedExpiration = $('.expiration-checkbox:checked').map(function() {
-            return this.value;
-        }).get();
-        console.log('selectedExpiration', selectedExpiration);
+
+        // 테이블 내용 지우기
         table.clear();
 
         // 데이터 추가
-        $.each(optionData.tickers, function(index, ticker) {
+        $.each(tickers, function(index, ticker) {
             // 선택한 만료일자와 일치하는 데이터만 추가
-            if (selectedExpiration.includes('ALL') || selectedExpiration.includes(ticker.expire)) {
+            if (selectedExpiration === 'all' || ticker.expire === selectedExpiration) {
                 table.row.add([
                     ticker.coin,
                     ticker.exs,
@@ -374,25 +325,48 @@ $(document).ready(async function() {
         // 테이블 다시 그리기
         table.draw();
 
+        // 만료일자 채우기 (기존 선택값 유지)
+        populateExpirationDates(expirationDates);
     }
 
-    // Reload button click handler
-    $('#reload-button').click(async function() {
-        optionData = await fetchOptionTickers();
-        updateTable(optionData);
+    // 만료일자 채우는 함수
+    function populateExpirationDates(expirationDates) {
+        $('#expiration-date-select').empty(); // 기존 옵션 제거
+
+        $('#expiration-date-select').append($('<option>', {
+            value: 'all',
+            text: 'All'
+        }));
+
+        expirationDates.forEach(function(expireDate) {
+            $('#expiration-date-select').append($('<option>', {
+                value: expireDate,
+                text: expireDate
+            }));
+        });
+
+        // 선택된 만료일자 설정
+        $('#expiration-date-select').val(selectedExpiration);
+    }
+
+    // 만료일자 선택 이벤트 핸들러
+    $('#expiration-date-select').change(function() {
+        selectedExpiration = $(this).val();
+        updateTable(); // 선택한 만료일자에 따라 테이블 갱신
     });
 
     // 주기적으로 테이블 갱신
     async function startTickerInterval(timeInterval) {
+        await updateTable(); // 초기 테이블 갱신
+
         setInterval(async () => {
-            optionData = await fetchOptionTickers();
-            updateTable(optionData); // 주기적으로 테이블 갱신
+            await updateTable(); // 주기적으로 테이블 갱신
         }, timeInterval);
     }
 
-    var optionData = await fetchOptionTickers(); // 페이지 로드 시 한 번만 호출
-    populateExpirationCheckboxes(optionData.expirationDates); // 초기 체크박스 생성
-    updateTable(optionData); // 초기 테이블 로드
+    // 초기 설정: 테이블 정렬
+    table.order([[2, 'asc'], [3, 'asc']]).draw();
+
     // 테이블 초기화
     startTickerInterval(5000); // 5초마다 갱신
 });
