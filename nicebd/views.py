@@ -5,6 +5,6 @@ from django.urls import reverse
 
 def index(request):
     print('index.html called')
-    url = reverse('nicebd:index')
+    url = reverse('optionbd:index')
     print(url)
-    return render(request, 'nicebd/index.html')
+    return render(request, 'optionbd/index.html')
