@@ -60,6 +60,8 @@ class Handler(object):
         self.arbitrage = None
         self.dryrun = False
         self.executor = ThreadPoolExecutor(max_workers=10)
+        self.optionsInfo = list()
+        self.expireDateInfo = list()
         self.get_config()
         return
 
@@ -183,6 +185,7 @@ class Handler(object):
                         exb_bid_qty[optionType]   = exb_strike[optionType]['bidQty']
                         exb_ask_qty[optionType]   = exb_strike[optionType]['askQty']
                         margin = {
+                            'coin': 'btc',
                             'exs': f'{exname_s}-{exname_b}',
                             'expire': expire_date,
                             'strike': strike,
@@ -210,7 +213,7 @@ class Handler(object):
                     self.alert_signal(reverisal,expire_date, '리버셜',
                                       f'Okx P 매도: {okx_p_bid_price} \n Bybit C 매수: {bybit_c_ask_price} \n행사가격 {strike} \n선물 : {self.binance.bids_price}')
                     '''
-            return optionInfo
+            return optionInfo, common_expire_dates
 
     def get_premium_info(self, orderbooks):
         '''
@@ -221,6 +224,7 @@ class Handler(object):
         :return:
         '''
         optionsInfo = list()
+        expireDateInfo = list()
         binance = 70,000
         ex_ob_s_list = ex_ob_b_list = orderbooks
         for ex1 in ex_ob_s_list:
@@ -229,9 +233,10 @@ class Handler(object):
                     continue
                 ex_s = ex1
                 ex_b = ex2
-                optionInfo = self.seek_premium_exch(ex_s, ex_b, binance)
+                optionInfo, expireDate = self.seek_premium_exch(ex_s, ex_b, binance)
                 optionsInfo.append(optionInfo)
-        return optionsInfo
+                expireDateInfo.append(expireDate)
+        return optionsInfo, expireDateInfo
 
     def arbi_main(self):
         logger.debug(f'Arbitrage Start_{self.botname}')
@@ -251,12 +256,17 @@ class Handler(object):
         '''
         if orderbooks:
             # {'okx': option4okx, 'byb': option4byb, ....}, 'eth': {}, }
-            optionsInfo = self.get_premium_info(orderbooks)
+            optionsInfo, expireDateInfo = self.get_premium_info(orderbooks)
             for op in optionsInfo:
                 logger.debug(f'optionsInfo_{op}_{self.botname}')
                 for k, v in op[0].items():
                     logger.debug(f'{k} : {v}')
-                return
+                break
+            # combined_optionsInfo = sorted(sum(optionsInfo, []), key=lambda x:(x['price'], -x['qty'])) #list(set(sum(optionsInfo, [])))
+            combined_optionsInfo = sum(optionsInfo, [])
+            combined_expireDateInfo = list(set(sum(expireDateInfo, [])))
+            self.optionsInfo = combined_optionsInfo
+            self.expireDateInfo = sorted(combined_expireDateInfo, key=lambda x:datetime.strptime(x, "%y%m%d"))
         return
 
     def run_arbi(self):
@@ -299,6 +309,21 @@ class Maker(object):
 
     def main(self, request):
         return HttpResponse('ok')
+
+    def getOptionsInfo(self, request):
+        logger.debug('getOptionsInfo')
+        context = dict()
+        if request.method == 'POST':
+            if request.POST.get('bot'):
+                botid = int(request.POST.get('bot'))
+                for k, hd in self.hds.items():
+                    context['data'] = hd.optionsInfo if hd.optionsInfo else []
+                    context['expireDate'] = hd.expireDateInfo if hd.expireDateInfo else []
+                    context['result'] = 'success'
+                    return HttpResponse(json.dumps(context))
+        context['data']   = ''
+        context['result'] = 'success'
+        return HttpResponse(json.dumps(context))
 
     def index(self, request):
         print('index.html called')
