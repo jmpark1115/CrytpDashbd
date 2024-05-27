@@ -4,6 +4,36 @@ import pandas as pd
 import numpy as np
 from utils import get_logo
 
+table_html = """
+    <div class="wrap">
+        <label for="expiration-date-select">만기일 선택:</label>
+        <select id="expiration-date-select">
+        <option value="all" selected>전체</option>
+        </select>
+        <button id="reload-button">새로 고침</button>
+
+        <table id="tickers-table" class="display" style="width:100%;">
+            <thead>
+              <tr>
+                <th>거래소</th>
+                <th>코인 심볼</th>
+                <th>만기일</th>
+                <th>행사가</th>
+                <th>옵션 유형</th>
+                <th data-orderable="false">매도 호가</th>
+                <th data-orderable="false">매도 수량</th>
+                <th data-orderable="false">매수 호가</th>
+                <th data-orderable="false">매수 수량</th>
+                <th>차이</th>
+                <th>남은 만기일</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+"""
+
 from lightweight_charts.widgets import StreamlitChart
 # Let's go!
 
@@ -146,7 +176,6 @@ with xrp_col:
 
 
 empty1_col, params_col, empty2_col = st.columns([0.1, 10, 0.1])
-
 
 with st.container():
         data = np.random.randn(5,7)
