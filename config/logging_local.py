@@ -4,6 +4,13 @@ try:
 except :
     raise ValueError
 
+# 로그 디렉토리 경로 정의
+log_dir = os.path.join(BASE_DIR, 'logs')
+
+# 로그 디렉토리가 존재하지 않으면 생성
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+
 LOGGING = {
     'version': 1,
     # 기존의 로깅 설정을 비활성화 할 것인가?
