@@ -22,4 +22,5 @@ urlpatterns = [
     path('', views.maker.index, name='index'),
     path('index/', views.maker.index, name='index'),
     path('index.html/', views.maker.index, name='index'),
+    path('getoptionsinfo/', views.maker.getOptionsInfo, name='getoptionsinfo'),
 ]
