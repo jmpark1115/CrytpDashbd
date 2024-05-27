@@ -32,6 +32,7 @@ logger = logging.getLogger(__name__)
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+db_migrate = False
 '''
     # def model_test(self):
     #     logger.debug('model_test')
@@ -293,7 +294,8 @@ class Maker(object):
         self.hds = dict() # { 'bybit-okx': hd of bybit-okx, ... }
         self.hd  = None # 특정 handler ex) bybit-okx, okx-okx
         self.hdid = None # 개별 hd id
-        self.hds_setup()
+        if not db_migrate:
+            self.hds_setup()
         return
 
     def hds_setup(self, force=False):
