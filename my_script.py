@@ -6,6 +6,8 @@ script = """
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+  
 <script>
       console.log('okk function init executed successfully');
       const GET_TIME_OUT = 30;
@@ -69,6 +71,10 @@ script = """
         }
       } //getIndexTickers
 
+      function getRandomIntInRange(min, max) {
+        return Math.floor(Math.random() * (max-min) + min);
+      }
+
       async function getOptionTickers() {
         console.log('getOptionTickers callled');
         const path = '/api/v5/market/tickers';
@@ -108,6 +114,8 @@ script = """
             refine_info.bidPrice = parseFloat(insts[i].bidPx)*idxPx || 0;
             refine_info.bidQty = parseFloat(insts[i].bidSz) || 0;
             refine_info.timestamp = parseInt(insts[i].ts) || 0;
+            refine_info.diff = refine_info.askPrice - refine_info.bidPrice;
+            refine_info.remainDate = getRandomIntInRange(5, 15);
 
             if(!tickers.hasOwnProperty(coin)) {
                 tickers[coin] = {};
@@ -134,6 +142,95 @@ script = """
       console.log('Interval started with ID:', intervalId);
     }
 
-main();
-</script>
+// 참고 문헌 https://datatables.net/
+
+    $(document).ready(function() {
+      // Initialize DataTable
+      var table = $('#tickers-table').DataTable({
+              responsive: true,
+              orderMulti: true,
+              //order : [[9, 'desc'],[10, 'asc']],
+      });
+
+      // Populate expiration date select options
+      async function populateExpirationDates() {
+        const tickers = await fetchOptionTickers();
+        var expirationDates = [];
+        $.each(tickers, function(exchange, coins) {
+          $.each(coins, function(coin, expirations) {
+            $.each(expirations, function(expiration, _) {
+              if (!expirationDates.includes(expiration)) {
+                expirationDates.push(expiration);
+                $('#expiration-date-select').append($('<option>', {
+                  value: expiration,
+                  text: expiration
+                }));
+              }
+            });
+          });
+        });
+      }
+
+      async function fetchOptionTickers() {
+        var _tickers = {};
+        var tickers = await getOptionTickers();
+        _tickers['okx'] = tickers;
+        return _tickers;
+      }
+
+      // Expiration date select change handler
+      var selectedExpiration = 'all';
+      $('#expiration-date-select').change(function() {
+        selectedExpiration = $(this).val();
+        table.clear().draw();
+        populateTable(table, selectedExpiration);
+      });
+
+      async function populateTable(table, selectedExpiration = 'all') {
+        const tickers = await fetchOptionTickers();
+        table.clear().draw();
+        $.each(tickers, function(exchange, coins) {
+          $.each(coins, function(coin, expirations) {
+            $.each(expirations, function(expiration, strikes) {
+              if (selectedExpiration === 'all' || selectedExpiration === expiration) {
+                $.each(strikes, function(strike, options) {
+                  $.each(options, function(optionType, optionData) {
+                    table.row.add([
+                      exchange,
+                      coin,
+                      expiration,
+                      strike,
+                      optionType,
+                      optionData.askPrice,
+                      optionData.askQty,
+                      optionData.bidPrice,
+                      optionData.bidQty,
+                      optionData.diff,
+                      optionData.remainDate
+                    ]).draw(false);
+                  });
+                });
+              }
+            });
+          });
+        });
+      }
+
+      async function startTickerInterval(timeInterval) {
+        await populateExpirationDates();
+        await populateTable(table, selectedExpiration);
+        setInterval(async () => {
+          await populateTable(table, selectedExpiration);
+        }, timeInterval);
+      }
+
+      // Reload button click handler
+      $('#reload-button').click(async function() {
+        await populateTable(table, selectedExpiration);
+      });
+
+      // Populate table initially
+      startTickerInterval(5000); // 5 seconds interval
+    });
+  </script>
 """
