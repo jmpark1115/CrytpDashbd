@@ -67,10 +67,11 @@
       async function getOptionTickers() {
         console.log('getOptionTickers callled');
         const path = '/api/v5/market/tickers';
-        tickers = {};
+        var tickers = {};
         var idxPx = await getIndexTickers();
         console.log('!!! result of idxPx: ' + idxPx);
         if (typeof idxPx == 'undefined') {
+            console.log('idxPx is undefined');
             return tickers;
         }
         const response = await $.ajax({
@@ -88,6 +89,7 @@
         const insts = response.data;
         if (typeof insts === 'object') {
             if (idxPx <= 0.0) {
+                console.log('idxPx is invalid');
                 return tickers;
             }
         }
@@ -204,7 +206,7 @@ https://www.okx.com/docs-v5/en/#overview-websocket
         doOpenOkxTicker();
     }
 
-    function okxGetOptionTickers(data) {
+    function _okxGetOptionTickers(data) {
         var tickers = {};
         const insts = data;
         for (let i=0; i<insts.length; i++) {

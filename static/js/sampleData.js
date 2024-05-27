@@ -97,6 +97,17 @@ var Tickers2 = {
        }
 //Tickers2
 
+var Tickers3 = [
+        [
+            {'ex': 'okx-byb', 'expire': 240217, 'strike': '13000', optionType: 'c', ask_price_s:'11', bid_price_b:'22', ask_qty_s:'33',bid_qty_b:'44', diff:'55', remainDate: '66'},
+            {'ex': 'okx-byb', 'expire': 240217, 'strike': '13000', optionType: 'c', ask_price_s:'11', bid_price_b:'22', ask_qty_s:'33',bid_qty_b:'44', diff:'55', remainDate: '66'},
+        ]
+        [
+            {'ex': 'okx-deribit', 'expire': 240217, 'strike': '13000', optionType: 'c', ask_price_s:'11', bid_price_b:'22', ask_qty_s:'33',bid_qty_b:'44', diff:'55', remainDate: '66'}
+        ]
+       ]
+//Tickers2
+
 var x = 1 ; // 초기값
 async function getOptionTickersTest() {
     x++;
