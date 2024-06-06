@@ -27,8 +27,8 @@ if serverIP:
     ALLOWED_HOSTS += [serverIP]
 
 # email
-EMAIL_HOST_USER = config.get('default', 'email_host_user')
-EMAIL_HOST_PASSWORD = config.get('default', 'email_host_password')
+# EMAIL_HOST_USER = config.get('default', 'email_host_user')
+# EMAIL_HOST_PASSWORD = config.get('default', 'email_host_password')
 
 
 if use_db == 'sqlite':
