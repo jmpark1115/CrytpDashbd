@@ -2,7 +2,7 @@ from .common import *
 from .logging import LOGGING
 from configparser import ConfigParser
 
-WSGI_APPLICATION = 'config.settings.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
