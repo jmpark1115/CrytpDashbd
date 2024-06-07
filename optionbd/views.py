@@ -128,9 +128,12 @@ class Handler(object):
         given_datetime = datetime(given_year, given_month, given_day)
         # 현재 날짜와 주어진 날짜 간의 차이 계산
         difference = given_datetime - current_date
+        difference_days = difference.days
+        if difference.seconds > 0:
+            difference_days = difference.days + 1
         # 남은 일수 가져오기
-        # print(f"현재로부터 {difference.days}일이 남았습니다.")
-        return difference.days
+        # print(f"현재로부터 {difference_days}일이 남았습니다.")
+        return difference_days
 
 
     def seek_premium_exch(self, exs, exb, coin):
@@ -290,7 +293,10 @@ class Handler(object):
         self.arbi_main()
         '''
         while True:
+            logger.debug(f'Arbitrage Period_{self.arbitrage.period}')
             self.arbi_main()
+            if self.arbitrage.period > 0:
+                time.sleep(self.arbitrage.period)
         return
 
 
