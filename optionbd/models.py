@@ -6,7 +6,7 @@ class ArbiBot(models.Model):
     name          = models.CharField(max_length=20)
     create        = models.DateTimeField(auto_now_add=True)
     user          = models.ForeignKey(User,null=True, on_delete=models.CASCADE)
-    EX_NAME = (('binance','binance'),('bybit','bybit'),('debribit','debribit'),('okx','okx'))
+    EX_NAME = (('bn','bn'),('bb','bb'),('drb','drb'),('okx','okx'))
     exchanger     = models.CharField(max_length=10, choices=EX_NAME)
     target        = models.CharField(max_length=10)
     payment       = models.CharField(max_length=10)

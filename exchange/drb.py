@@ -11,20 +11,20 @@ except Exception as ex:
     logger.debug('import error %s %s' %(__file__, ex))
     # raise ValueError
 
-API_URL = 'https://www.okx.com' # okx Api URL
+API_URL = 'https://www.deribit.com/api/v2'
 
-class Okx(object):
+class Drb(object):
     def __init__(self, id):
         self.id = id
         self.target = ''
         self.payment = ''
         self.symbol = ''  # ex) '%s%s' %(self.target, self.payment)
-        self.exchanger = 'okx'
+        self.exchanger = 'drb'
         self.nickname = ''  # 'okx'+'_'+str(id)+'_'+self.symbol
         self.type = ''
         self.GET_TIME_OUT = 30
         self.POST_TIME_OUT = 60
-        self.limit_day = 0 # 수집제한일 (0 = 제한없음)
+        self.limit_day = 0  # 수집제한일 (0 = 제한없음)
         self.get_config()
         return
 
@@ -75,69 +75,60 @@ class Okx(object):
 
         return False
 
-
-    # def OptionIndex(self, coin):
     def get_index_price(self):
         '''
         Index 가격 가져오기
-        coin : 'BTC', 'ETH', ....
-        GET /api/v5/market/index-tickers
+        index_name : 'eth_usdt', 'ebtc_usdt', ....
+        GET /public/get_index_price
         :return: float
         '''
+        index_name_mapping = {"BTC": "btc_usdt", "ETH": "eth_usdt"}
         try:
-            path = '/api/v5/market/index-tickers'
+            path = '/public/get_index_price'
             request = {
-                'instType': 'OPTION',
-                'instId': self.symbol
+                'index_name': index_name_mapping[self.target]
             }
             res = self.http_request('GET', path, request)
             if isinstance(res, dict):
-                if 'data' in res and res['data']:
-                    for i in res['data']:
-                        price = float(i['idxPx'])
-                        return price
+                if 'result' in res and res['result']:
+                    price = float(res['result']['index_price'])
+                    return price
         except Exception as ex:
-            logger.error(f'Exception in get_index_price {ex}')
+            logger.error(f'Exception in IndexTickers {ex}')
         return 0
 
-    # def OptionTickers(self, coin):
+
     def Orderbook(self):
         '''
-        GET /api/v5/market/tickers
+        GET /public/get_book_summary_by_currency
         :return:
         '''
         tickers_key = self.exchanger + "-" + self.target
         tickers = dict()
-        path = '/api/v5/market/tickers'
+        path = '/public/tickers_by_currency'
         request = {
-            'instType' : 'OPTION',
-            'uly': self.symbol
+            'kind' : 'option',
+            'currency': self.target
         }
         try:
             res = self.http_request('GET', path, request)
             if isinstance(res, dict):
-                if 'data' in res and res['data']:
-                    # index 가격 가져오기
-                    indexPrice = self.get_index_price()
-                    if indexPrice <= 0:
-                        return tickers
-                    else:
-                        indexPrice = str(indexPrice)
-                    for data in res['data']:
-                        ticker = data['instId'].split('-')
-                        # coin = ticker[0]
-                        expire_data = ticker[2]
+                if 'result' in res and res['result']:
+                    for data in res['result']:
+                        ticker = data['instrument_name'].split('-')
+                        date = datetime.strptime(ticker[1], '%d%b%y')
+                        expire_data = date.strftime('%y%m%d')
                         if self.ticker_filter(expire_data):
                             continue
 
-                        strike = ticker[3]
-                        side = ticker[4]
+                        strike = ticker[2]
+                        side = ticker[3]
                         refine_info = dict()
-                        refine_info['askPrice'] = float(D(data['askPx'])*D(indexPrice)) if data['askPx'] else 0
-                        refine_info['askQty'] = float(D(data['askSz']) ) if data['askSz'] else 0
-                        refine_info['bidPrice'] = float(D(data['bidPx'])* D(indexPrice)) if data['bidPx'] else 0
-                        refine_info['bidQty'] = float(D(data['bidSz'])) if data['bidSz'] else 0
-                        refine_info['timestamp'] = int(data['ts']) if data['ts'] else 0
+                        refine_info['askPrice'] = float(D(data['best_ask_price'])*D(data['estimated_delivery_price'])) if data['best_ask_price'] else 0
+                        refine_info['askQty'] = float(D(data['best_ask_amount']) ) if data['best_ask_amount'] else 0
+                        refine_info['bidPrice'] = float(D(data['best_bid_price'])*D(data['estimated_delivery_price'])) if data['best_bid_price'] else 0
+                        refine_info['bidQty'] = float(D(data['best_bid_amount']) ) if data['best_bid_amount'] else 0
+                        refine_info['timestamp'] = int(data['timestamp']) if data['timestamp'] else 0
                         """
                         refine_info:
                         {'230607': {'23500': {'C': {'askPrice': '0.1285', 'askQty': '3510', 'bidPrice': '0.1205', 'bidQty': '3510', 'timestamp': '1686124069112'}}}}
@@ -152,10 +143,10 @@ class Okx(object):
                             tickers[expire_data][strike][side] = dict()
                         tickers[expire_data][strike][side] = refine_info
         except Exception as ex:
-            logger.error(f'Exception in Orderbook {ex}')
+            logger.error(f'Exception in OptionTickers {ex}')
         return {self.exchanger: tickers, self.target: self.target}
 
-    def ticker_filter(self, expire_data ):
+    def ticker_filter(self, expire_data):
         is_continue = False
         if self.limit_day > 0:
             try:
@@ -177,20 +168,21 @@ class Okx(object):
                 logger.error(f'Exception in ticker_filter {ex}')
         return is_continue
 
-    def OptionTickers(self, underlying):
+    def OptionTickers(self, currency):
         '''
         GET /api/v5/market/tickers
         :return:
         '''
-        path = '/api/v5/market/tickers'
+        path = '/public/get_book_summary_by_currency'
         request = {
-            'instType' : 'OPTION',
-            'uly': underlying
+            'kind' : 'option',
+            'currency': currency
         }
         res = self.http_request('GET', path, request)
         print(res)
 
 if __name__ == "__main__":
-    ex = Okx(0)
-    d = ex.OptionTickers('ETH-USD')
+    ex = Drb(0)
+    d = ex.OptionTickers('ETH')
+    # d = ex.Ticker()
     print(d)

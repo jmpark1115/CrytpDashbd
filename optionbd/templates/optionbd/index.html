@@ -184,11 +184,140 @@
                                 Option DataTable
                             </div>
                             <div class="card-body">
+                                <label for="exchange-select">Exchanges:</label>
+                                <div id="exchange-checkboxes">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input exchange-checkbox" type="checkbox" value="ALL" id="exchange-all" checked>
+                                        <label class="form-check-label" for="exchange-all">
+                                            ALL
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input exchange-checkbox" type="checkbox" value="bn-drb" id="exchange-BN-DRB" >
+                                        <label class="form-check-label" for="exchange-BN-DRB">
+                                            -BN+DRB
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input exchange-checkbox" type="checkbox" value="bn-bb" id="exchange-BN-BB" >
+                                        <label class="form-check-label" for="exchange-BN-BB">
+                                            -BN+BB
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input exchange-checkbox" type="checkbox" value="bn-okx" id="exchange-BN-OKX" >
+                                        <label class="form-check-label" for="exchange-BN-OKX">
+                                            -BN+OKX
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input exchange-checkbox" type="checkbox" value="drb-bn" id="exchange-DRB-BN" >
+                                        <label class="form-check-label" for="exchange-DRB-BN">
+                                            -DRB+BN
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input exchange-checkbox" type="checkbox" value="bb-bn" id="exchange-BB-BN" >
+                                        <label class="form-check-label" for="exchange-BB-BN">
+                                            -BB+BN
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input exchange-checkbox" type="checkbox" value="okx-bn" id="exchange-OKX-BN" >
+                                        <label class="form-check-label" for="exchange-OKX-BN">
+                                            -OKX+BN
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input exchange-checkbox" type="checkbox" value="drb-bb" id="exchange-DRB-BB" >
+                                        <label class="form-check-label" for="exchange-DRB-BB">
+                                            -DRB+BB
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input exchange-checkbox" type="checkbox" value="drb-okx" id="exchange-DRB-OKX" >
+                                        <label class="form-check-label" for="exchange-DRB-OKX">
+                                            -DRB+OKX
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input exchange-checkbox" type="checkbox" value="bb-drb" id="exchange-BB-DRB" >
+                                        <label class="form-check-label" for="exchange-BB-DRB">
+                                            -BB+DRB
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input exchange-checkbox" type="checkbox" value="okx-drb" id="exchange-OKX-DRB" >
+                                        <label class="form-check-label" for="exchange-OKX-DRB">
+                                            -OKX+DRB
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input exchange-checkbox" type="checkbox" value="bb-okx" id="exchange-BB-OKX" >
+                                        <label class="form-check-label" for="exchange-BB-OKX">
+                                            -BB+OKX
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input exchange-checkbox" type="checkbox" value="okx-bb" id="exchange-OKX-BB" >
+                                        <label class="form-check-label" for="exchange-OKX-BB">
+                                            -OKX+BB
+                                        </label>
+                                    </div>
+                                </div>
+                                <label for="coin-select">Coins:</label>
+                                <div id="coin-checkboxes">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input coin-checkbox" type="checkbox" value="ALL" id="coin-all" checked>
+                                        <label class="form-check-label" for="coin-all">
+                                            ALL
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input coin-checkbox" type="checkbox" value="BTC" id="coin-BTC" >
+                                        <label class="form-check-label" for="coin-BTC">
+                                            BTC
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input coin-checkbox" type="checkbox" value="ETH" id="coin-ETH" >
+                                        <label class="form-check-label" for="coin-ETH">
+                                            ETH
+                                        </label>
+                                    </div>
+                                </div>
                                 <label for="expiration-date-select">ExpireDates:</label>
                                 <div id="expiration-date-checkboxes">
-                                <!--  checkbox added     -->
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input expiration-checkbox" type="checkbox" value="ALL" id="expire-all" checked>
+                                        <label class="form-check-label" for="expire-all">
+                                            ALL
+                                        </label>
+                                    </div>
                                 </div>
-                                <button id="reload-button">Reload</button>
+                                <label for="coin-select">Options:</label>
+                                <div id="option-checkboxes">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input option-checkbox" type="checkbox" value="ALL" id="option-all" checked>
+                                        <label class="form-check-label" for="option-all">
+                                            ALL
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input option-checkbox" type="checkbox" value="C" id="option-C" >
+                                        <label class="form-check-label" for="option-C">
+                                            C
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input option-checkbox" type="checkbox" value="P" id="option-P" >
+                                        <label class="form-check-label" for="option-P">
+                                            P
+                                        </label>
+                                    </div>
+                                </div>
+                                <input type="hidden" value="Y" id="isRestart" >
+                                <button id="stop-button">Stop</button>
                             </div>
                             <div class="card-body">
                                 <table id="tickers-table" class="display compact" width="100%">
@@ -245,87 +374,232 @@
         </div>
 
 <script>
-// https://datatables.net/
-// https://adminkit.io/?affiliate_id=558041811&ref=datatables
-// https://demo.adminkit.io/dashboard-crypto.html?theme=default
 
-$(document).ready(async function() {
-    var table = $('#tickers-table').DataTable({
-        paging: false, // 페이징 사용 안함.
-        responsive: true,
-        orderMulti: true,
-        order: [[2, 'asc'], [3, 'asc']],
-    });
 
-    // 비동기로 데이터 및 만료일자 가져오기
-    async function fetchOptionTickers(expireDateUpdate=true) {
-        var optionData = {};
-        var params = {
-            'mode': 'ok',
-            'symbol': 'btc',
-        };
-        try {
-            var response = await $.ajax({
-                async: true,
-                type: 'POST',
-                data: {
-                    'csrfmiddlewaretoken' : '{{ csrf_token }}',
-                    'bot' : 0,
-                    'action' : 'apply',
-                    'params'  : $.param(params),
-                },
-                url: "{% url 'optionbd:getoptionsinfo' %}",
-                dataType: "json",
-            });
+var _websocket_adress = 'ws://localhost:8005';
+var _websocket;
+var selectedExchange = [];
+var selectedCoin = [];
+var selectedOption = [];
+var selectedExpiration = [];
+var expirationDatesAll = [];
+var optionData = {};
+var table = $('#tickers-table').DataTable({
+    paging: false, // 페이징 사용 안함.
+    responsive: true,
+    orderMulti: true,
+    order: [[2, 'asc'], [3, 'asc'], [9, 'desc']],
+    createdRow: function(row, data, dataIndex) {
+        if (data[5] > data[7]) {
+            const style = {
+              'background-color': 'rgb(255, 204, 204)',
+              'font-weight': 'bold'
+            };
 
-            if (response.result === 'success') {
-                optionData.tickers = response.data;
-                optionData.expirationDates = response.expireDate; // 만료일자 가져오기
-                console.log('expireDateUpdated_' + expireDateUpdate);
-                if(expireDateUpdate) {
-                    populateExpirationCheckboxes(response.expireDate); // 체크박스 생성
-                };
-            } else {
-                console.log('response error');
-            }
-        } catch (error) {
-            console.error('Error occurred:', error);
-            alert('error : ' + error);
+            $(row).css(style);
+            $(row).find('td:nth-child(3), td:nth-child(4), td:nth-child(10)').css(style);
         }
-        return optionData;
+    }
+});
+
+//option websocket init
+function _option_init() {
+
+    const currentTimeMillis = Date.now();
+    const grade = 'vip';
+    const paramStr = '?grade=' + grade + '&timestamp=' + currentTimeMillis;
+    console.log(paramStr);
+
+    _websocket = new WebSocket(_websocket_adress+paramStr);
+    _websocket.onopen = function(e) { _option_open(e) };
+    _websocket.onclose = function(e) { _option_close(e) };
+    _websocket.onmessage = function(e) { _option_message(e) }
+    _websocket.onerror = function(e) { _option_error(e) };
+
+}
+//option websocket open
+function _option_open() {
+    console.log("option webSocket opened !!!");
+}
+//option websocket close
+function _option_close() {
+    console.log("option webSocket closed !!!");
+    console.log($('#isRestart').val());
+    if($('#isRestart').val() == 'Y'){
+        console.log("try reconnection !!!");
+        _option_init();
+    }
+}
+//option websocket open
+function _option_error() {
+    console.log( "option webSocket error : ", e.data );
+}
+
+//option websocket message process
+function _option_message(e) {
+
+    //console.log(event.data);
+    //JSON Object 변환 및 추출
+    jsonData = JSON.parse(event.data);
+    optionData.expirationDates = jsonData.expireDate;
+    optionData.tickers = jsonData.data;
+    optionData.timestamp = jsonData.executeTime;
+    updateTable(optionData);
+
+}
+
+// Option Datatable 갱신
+function updateTable(optionData) {
+
+    // OptionTickers가 유효하지 않으면 업데이트하지 않음
+    if (!(optionData && optionData.tickers.length > 0 &&
+       optionData.expirationDates && optionData.expirationDates.length>0)) {
+        console.log("OptionTickers Invalid")
+        return;
     }
 
-    // 만료일 체크박스 생성 및 업데이트 함수
-    function populateExpirationCheckboxes(expirationDates) {
-        const container = $('#expiration-date-checkboxes');
-        container.empty(); // 기존 체크박스 제거
+    // 선택된 Exchange 수집
+    selectedExchange = $('.exchange-checkbox:checked').map(function() {
+        return this.value;
+    }).get();
 
-        // '전체' 선택 옵션 무조건 추가
-        const allCheckboxHtml = `
-            <div class="form-check form-check-inline">
-                <input class="form-check-input expiration-checkbox" type="checkbox" value="ALL" id="expire-all" checked>
-                <label class="form-check-label" for="expire-all">
-                    ALL
+    // 선택된 Coin 수집
+    selectedCoin = $('.coin-checkbox:checked').map(function() {
+        return this.value;
+    }).get();
+
+    // 선택된 Option 수집
+    selectedOption = $('.option-checkbox:checked').map(function() {
+        return this.value;
+    }).get();
+
+    // 선택된 ExpireDate 수집
+    selectedExpiration = $('.expiration-checkbox:checked').map(function() {
+        return this.value;
+    }).get();
+
+    // ExpireDate 갱신
+    populateExpirationCheckboxes(optionData.expirationDates, selectedExpiration);
+
+    table.clear();
+
+    // 데이터 갱신 및 하이라이트 처리
+    $.each(optionData.tickers, function(index, ticker) {
+
+        // 선택한 exchange, coin, expire, option 순으로 일치여부 확인
+        if (selectedExchange.includes('ALL') || selectedExchange.includes(ticker.exs)) {
+            if (selectedCoin.includes('ALL') || selectedCoin.includes(ticker.coin)) {
+                if (selectedExpiration.includes('ALL') || selectedExpiration.includes(ticker.expire)) {
+                    if (selectedOption.includes('ALL') || selectedOption.includes(ticker.optionType)) {
+
+                        table.row.add([
+                            ticker.coin,
+                            ticker.exs,
+                            ticker.expire,
+                            ticker.strike,
+                            ticker.optionType,
+                            ticker.ask_price,
+                            ticker.ask_qty,
+                            ticker.bid_price,
+                            ticker.bid_qty,
+                            ticker.diff,
+                            ticker.remainDate,
+                        ]);
+
+                    }
+                }
+            }
+        }
+
+    });
+
+    // 테이블 다시 그리기
+    table.draw();
+
+    // 테이블 행에 하일라이트 추가
+
+}
+
+// ExpireDate Checkbox 갱신
+function populateExpirationCheckboxes(expirationDates, selectedExpiration) {
+
+    //console.log('expirationDates', expirationDates.toString());
+    //console.log('selectedExpiration', selectedExpiration.toString());
+    expirationDatesAll = expirationDatesAll.concat(expirationDates);
+    expirationDatesAll = expirationDatesAll.filter((item, pos) => expirationDatesAll.indexOf(item) === pos).sort();
+    //console.log('expirationDatesAll' ,expirationDatesAll.toString());
+
+    // 기존 체크박스 제거 후 갱신
+    const container = $('#expiration-date-checkboxes');
+    container.empty();
+
+    let allChecked = '';
+    if(selectedExpiration.includes('ALL')){
+        allChecked = 'checked'
+    }
+    // '전체' 선택 옵션 무조건 추가
+    const allCheckboxHtml = `
+        <div class="form-check form-check-inline" style="">
+            <input class="form-check-input expiration-checkbox" type="checkbox" value="ALL" id="expire-all" ${allChecked}>
+            <label class="form-check-label" for="expire-all">
+                ALL
+            </label>
+        </div>
+    `;
+    container.prepend(allCheckboxHtml);
+
+    expirationDatesAll.forEach(function(expireDate) {
+        let checked = '';
+        if(selectedExpiration.includes(expireDate)){
+            checked = 'checked'
+        }
+        let displayMode = '';
+        if(!expirationDates.includes(expireDate)){
+            displayMode = 'display:none';
+        }
+
+        // 새로운 만료일만 추가
+        const checkboxHtml = `
+            <div class="form-check form-check-inline" style="${displayMode}">
+                <input class="form-check-input expiration-checkbox" type="checkbox" value="${expireDate}" id="expire-${expireDate}" ${checked}>
+                <label class="form-check-label" for="expire-${expireDate}">
+                    ${expireDate}
                 </label>
             </div>
         `;
-        container.prepend(allCheckboxHtml);
+        container.append(checkboxHtml);
+    });
 
-        expirationDates.forEach(function(expireDate) {
-            // 새로운 만료일만 추가
-            const checkboxHtml = `
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input expiration-checkbox" type="checkbox" value="${expireDate}" id="expire-${expireDate}">
-                    <label class="form-check-label" for="expire-${expireDate}">
-                        ${expireDate}
-                    </label>
-                </div>
-            `;
-            container.append(checkboxHtml);
-        });
-    }
 
-    // 체크박스 변경 이벤트 핸들러
+}
+
+// Open option websocket
+function doOpenOption() {
+    //console.log('====> doOpenOptionTable');
+    _option_init();
+}
+
+// close option websocket
+function doCloseOption() {
+  if (_websocket) {
+    _websocket.close();
+    _websocket = null;
+  }
+}
+
+$(function() {
+
+    // exchange-checkboxes event handler
+    $('#exchange-checkboxes').on('change', '.exchange-checkbox', function() {
+        $('.exchange-checkbox').not(this).prop('checked', false);
+    });
+
+    // coin-checkboxes event handler
+    $('#coin-checkboxes').on('change', '.coin-checkbox', function() {
+        $('.coin-checkbox').not(this).prop('checked', false);
+    });
+
+    // expiration-date-checkboxes event handler
     $('#expiration-date-checkboxes').on('change', '.expiration-checkbox', function() {
         if (this.value === 'ALL') {
             // '전체' 선택 시 다른 체크박스 해제
@@ -334,71 +608,37 @@ $(document).ready(async function() {
             // '전체'를 제외한 다른 선택 시 '전체' 해제
             $('#expire-all').prop('checked', false);
         }
-        updateTable(optionData); // 테이블 업데이트 함수 호출
     });
 
-    // 테이블 갱신 함수
-    function updateTable(optionData) {
-        // OptionTickers가 유효하지 않으면 업데이트하지 않음
-        if (!(optionData && optionData.tickers.length > 0 &&
-           optionData.expirationDates && optionData.expirationDates.length>0)) {
-            console.log("OptionTickers Invalid")
-            return;
+    // option-checkboxes event handler
+    $('#option-checkboxes').on('change', '.option-checkbox', function() {
+        $('.option-checkbox').not(this).prop('checked', false);
+    });
+
+    // stop-button event handler
+    $('#stop-button').on('click', function() {
+
+        if (this.textContent === 'Stop') {
+            this.textContent = 'Start'
+            $('#isRestart').val('N')
+            doCloseOption();
+
+        } else {
+            this.textContent = 'Stop'
+            $('#isRestart').val('Y')
+            doOpenOption();
         }
-        const selectedExpiration = $('.expiration-checkbox:checked').map(function() {
-            return this.value;
-        }).get();
-        console.log('selectedExpiration', selectedExpiration);
-        table.clear();
-
-        // 데이터 추가
-        $.each(optionData.tickers, function(index, ticker) {
-            // 선택한 만료일자와 일치하는 데이터만 추가
-            if (selectedExpiration.includes('ALL') || selectedExpiration.includes(ticker.expire)) {
-                table.row.add([
-                    ticker.coin,
-                    ticker.exs,
-                    ticker.expire,
-                    ticker.strike,
-                    ticker.optionType,
-                    ticker.ask_price,
-                    ticker.bid_price,
-                    ticker.ask_qty,
-                    ticker.bid_qty,
-                    ticker.diff,
-                    ticker.remainDate
-                ]);
-            }
-        });
-
-        // 테이블 다시 그리기
-        table.draw();
-
-    }
-
-    // Reload button click handler
-    $('#reload-button').click(async function() {
-        optionData = await fetchOptionTickers();
-        updateTable(optionData);
     });
 
-    // 주기적으로 테이블 갱신
-    async function startTickerInterval(timeInterval) {
-        setInterval(async () => {
-            optionData = await fetchOptionTickers();
-            updateTable(optionData); // 주기적으로 테이블 갱신
-        }, timeInterval);
-    }
+    // 웹소켓 접속 및 데이터 갱신 시작
+    doOpenOption();
 
-    var optionData = await fetchOptionTickers(); // 페이지 로드 시 한 번만 호출
-    populateExpirationCheckboxes(optionData.expirationDates); // 초기 체크박스 생성
-    updateTable(optionData); // 초기 테이블 로드
-    // 테이블 초기화
-    startTickerInterval(5000); // 5초마다 갱신
 });
+
+
 </script>
 {% endblock %}
 
 /*
-    {"event":"error","msg":"Wrong URL or channel:tickers,instId:BTC-USD-230609 doesn't exist. Please use the correct URL, channel and parameters referring to API document.","code":"60018","connId":"24ce02d2"}
-    */
+{"event":"error","msg":"Wrong URL or channel:tickers,instId:BTC-USD-230609 doesn't exist. Please use the correct URL, channel and parameters referring to API document.","code":"60018","connId":"24ce02d2"}
+*/
