@@ -61,7 +61,7 @@ LOGGING = {
             'handlers': ['file'],
             'level': 'DEBUG',
         },'exchange': {
-            'handlers': ['console'],
+            'handlers': ['file'],
             'level': 'DEBUG',
         },
     },
