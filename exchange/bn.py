@@ -4,6 +4,7 @@ import logging
 from datetime import datetime, timedelta
 from decimal import Decimal as D
 
+import logging
 logger = logging.getLogger(__name__)
 
 try:
@@ -93,9 +94,9 @@ class Bn(object):
         # 현재요청시간 - 과거요청시간의 차이가 self.req_interval 보다 클경우 요청 실행
         current_time_ms = int(round(time.time() * 1000))
         timd_diff = current_time_ms - self.previous_req_time
-        logger.error(f'timd_diff : {timd_diff}')
+        logger.debug(f'timd_diff : {timd_diff}')
         if timd_diff > self.req_interval:
-            logger.error(f'previous_req_time is updated: {current_time_ms}')
+            logger.debug(f'previous_req_time is updated: {current_time_ms}')
             self.previous_req_time = current_time_ms
             try:
                 res = self.http_request('GET', path, request)

@@ -60,6 +60,9 @@ LOGGING = {
         'optionbd': {
             'handlers': ['file'],
             'level': 'DEBUG',
+        },'exchange': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
         },
     },
 }
