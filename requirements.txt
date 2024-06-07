@@ -1,2 +1,4 @@
 Django==2.2.28
 requests
+sentry-sdk==2.4.0
+PyMySQL==0.10.1
