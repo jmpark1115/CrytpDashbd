@@ -294,9 +294,15 @@ class Handler(object):
         '''
         while True:
             logger.debug(f'Arbitrage Period_{self.arbitrage.period}')
-            self.arbi_main()
-            if self.arbitrage.period > 0:
+            if self.arbitrage.period == 0:
                 time.sleep(self.arbitrage.period)
+                self.arbi_main()
+            elif self.arbitrage.period > 0 :
+                time.sleep(self.arbitrage.period)
+                self.arbi_main()
+            else:
+                logger.debug(f'Arbitrage Execution Is Skipped For Arbitrage Period_')
+
         return
 
 
