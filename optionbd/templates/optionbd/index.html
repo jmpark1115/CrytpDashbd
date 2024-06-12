@@ -382,7 +382,7 @@
 <script>
 
 
-//var _websocket_adress = 'ws://localhost:8005';
+// var _websocket_adress = 'ws://localhost:8005';
 var _websocket_adress = 'ws://13.124.183.103:8005';
 var _websocket;
 var selectedExchange = [];
@@ -401,6 +401,8 @@ var table = $('#tickers-table').DataTable({
         var column = this;
         var header = $(column.header());
         header.css('text-align', 'center');
+        var footer = $(column.footer());
+        footer.css('text-align', 'center');
       });
     },
     createdRow: function(row, data, dataIndex) {
