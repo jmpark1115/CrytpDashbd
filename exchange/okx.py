@@ -24,7 +24,11 @@ class Okx(object):
         self.type = ''
         self.GET_TIME_OUT = 30
         self.POST_TIME_OUT = 60
+        self.tickers = dict()
         self.limit_day = 0 # 수집제한일 (0 = 제한없음)
+        self.tr_fee_rate = 0.0003 # 거래수수료율 (0.03%)
+        self.ex_fee_rate = 0.0002 # 행사수수료율 (0.02%)
+        self.max_im_factor = {"BTC": 0.15, "ETH": 0.15} # BB 값으로 통일 (향후 교체 필요)
         self.get_config()
         return
 
@@ -84,11 +88,12 @@ class Okx(object):
         GET /api/v5/market/index-tickers
         :return: float
         '''
+        index_name_mapping = {"BTC": "BTC-USD", "ETH": "ETH-USD"}
         try:
             path = '/api/v5/market/index-tickers'
             request = {
                 'instType': 'OPTION',
-                'instId': self.symbol
+                'instId': index_name_mapping[self.target]
             }
             res = self.http_request('GET', path, request)
             if isinstance(res, dict):
@@ -120,9 +125,11 @@ class Okx(object):
                     # index 가격 가져오기
                     indexPrice = self.get_index_price()
                     if indexPrice <= 0:
-                        return tickers
+                        # 이전 데이터 반환
+                        return {self.exchanger: self.tickers, self.target: self.target}
                     else:
                         indexPrice = str(indexPrice)
+                    # res 데이터 파싱
                     for data in res['data']:
                         ticker = data['instId'].split('-')
                         # coin = ticker[0]
@@ -137,6 +144,10 @@ class Okx(object):
                         refine_info['askQty'] = float(D(data['askSz']) ) if data['askSz'] else 0
                         refine_info['bidPrice'] = float(D(data['bidPx'])* D(indexPrice)) if data['bidPx'] else 0
                         refine_info['bidQty'] = float(D(data['bidSz'])) if data['bidSz'] else 0
+                        refine_info['indexPrice'] = float(D(indexPrice))
+                        refine_info['tr_fee_rate'] = self.tr_fee_rate
+                        refine_info['ex_fee_rate'] = self.ex_fee_rate
+                        refine_info['max_im_factor'] = self.max_im_factor
                         refine_info['timestamp'] = int(data['ts']) if data['ts'] else 0
                         """
                         refine_info:
@@ -151,9 +162,10 @@ class Okx(object):
                         if not side in tickers[expire_data][strike]:
                             tickers[expire_data][strike][side] = dict()
                         tickers[expire_data][strike][side] = refine_info
+                    self.tickers = tickers
         except Exception as ex:
             logger.error(f'Exception in Orderbook {ex}')
-        return {self.exchanger: tickers, self.target: self.target}
+        return {self.exchanger: self.tickers, self.target: self.target}
 
     def ticker_filter(self, expire_data ):
         is_continue = False

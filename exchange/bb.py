@@ -24,7 +24,11 @@ class Bb(object):
         self.type = ''
         self.GET_TIME_OUT = 30
         self.POST_TIME_OUT = 60
+        self.tickers = dict()
         self.limit_day = 0  # 수집제한일 (0 = 제한없음)
+        self.tr_fee_rate = 0.0002 # 거래수수료율 (0.02%)
+        self.ex_fee_rate = 0.00015 # 행사수수료율 (0.015%)
+        self.max_im_factor = {"BTC": 0.15, "ETH": 0.15} # BB 값으로 통일 (향후 교체 필요)
         self.get_config()
         return
 
@@ -93,6 +97,7 @@ class Bb(object):
             if isinstance(res, dict):
                 if 'result' in res and res['result']['list']:
                     time = int(res['time']) if res['time'] else 0
+                    # res 데이터 파싱
                     for data in res['result']['list']:
                         ticker = data['symbol'].split('-')
                         date = datetime.strptime(ticker[1], '%d%b%y')
@@ -107,6 +112,10 @@ class Bb(object):
                         refine_info['askQty'] = float(D(data['ask1Size']) ) if data['ask1Size'] else 0
                         refine_info['bidPrice'] = float(D(data['bid1Price'])) if data['bid1Price'] else 0
                         refine_info['bidQty'] = float(D(data['bid1Size']) ) if data['bid1Size'] else 0
+                        refine_info['indexPrice'] = float(D(data['indexPrice'])) if data['indexPrice'] else 0
+                        refine_info['tr_fee_rate'] = self.tr_fee_rate
+                        refine_info['ex_fee_rate'] = self.ex_fee_rate
+                        refine_info['max_im_factor'] = self.max_im_factor
                         refine_info['timestamp'] = time
                         """
                         refine_info:
@@ -121,9 +130,10 @@ class Bb(object):
                         if not side in tickers[expire_data][strike]:
                             tickers[expire_data][strike][side] = dict()
                         tickers[expire_data][strike][side] = refine_info
+                    self.tickers = tickers
         except Exception as ex:
             logger.error(f'Exception in OptionTickers {ex}')
-        return {self.exchanger: tickers, self.target: self.target}
+        return {self.exchanger: self.tickers, self.target: self.target}
 
     def ticker_filter(self, expire_data):
         is_continue = False

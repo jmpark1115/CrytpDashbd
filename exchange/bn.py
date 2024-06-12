@@ -30,6 +30,9 @@ class Bn(object):
         self.req_interval = 20000
         self.limit_day = 0  # 수집제한일 (0 = 제한없음)
         self.previous_req_time = 0
+        self.tr_fee_rate = 0.0003 # 거래수수료율 (0.03%)
+        self.ex_fee_rate = 0.00015 # 행사수수료율 (0.015%)
+        self.max_im_factor = {"BTC": 0.15, "ETH": 0.15} # BB 값으로 통일 (향후 교체 필요)
         self.get_config()
         return
 
@@ -80,6 +83,28 @@ class Bn(object):
 
         return False
 
+    def get_index_price(self):
+        '''
+        Index 가격 가져오기
+        index_name : 'ETHUSDT', 'BTCUSDT', ....
+        GET /index
+        :return: float
+        '''
+        index_name_mapping = {"BTC": "BTCUSDT", "ETH": "ETHUSDT"}
+        try:
+            path = '/index'
+            request = {
+                'underlying': index_name_mapping[self.target]
+            }
+            res = self.http_request('GET', path, request)
+            if isinstance(res, dict):
+                if 'indexPrice' in res and res['indexPrice']:
+                    price = float(res['indexPrice'])
+                    return price
+        except Exception as ex:
+            logger.error(f'Exception in IndexTickers {ex}')
+        return 0
+
 
     def Orderbook(self):
         '''
@@ -101,6 +126,14 @@ class Bn(object):
             try:
                 res = self.http_request('GET', path, request)
                 if isinstance(res, list):
+                    # index 가격 가져오기
+                    indexPrice = self.get_index_price()
+                    if indexPrice <= 0:
+                        # 이전 데이터 반환
+                        return {self.exchanger: self.tickers, self.target: self.target}
+                    else:
+                        indexPrice = str(indexPrice)
+                    # res 데이터 파싱
                     for data in res:
                         ticker = data['symbol'].split('-')
                         expire_data = ticker[1]
@@ -115,6 +148,10 @@ class Bn(object):
                             refine_info['askQty'] = 0
                             refine_info['bidPrice'] = float(D(data['bidPrice'])) if data['bidPrice'] else 0
                             refine_info['bidQty'] = 0
+                            refine_info['indexPrice'] = float(D(indexPrice))
+                            refine_info['tr_fee_rate'] = self.tr_fee_rate
+                            refine_info['ex_fee_rate'] = self.ex_fee_rate
+                            refine_info['max_im_factor'] = self.max_im_factor
                             refine_info['timestamp'] = int(data['openTime']) if data['openTime'] else 0
                             """
                             refine_info:

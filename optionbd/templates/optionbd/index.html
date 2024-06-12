@@ -328,11 +328,14 @@
                                             <th>Expire</th>
                                             <th>Strike</th>
                                             <th>Type</th>
-                                            <th data-orderable="false">SelPrice</th>
-                                            <th data-orderable="false">SelQty</th>
+                                            <th data-orderable="false">SellPrice</th>
                                             <th data-orderable="false">BuyPrice</th>
-                                            <th data-orderable="false">BuyQty</th>
-                                            <th>Margin</th>
+                                            <th data-orderable="false">TotalFee</th>
+                                            <th data-orderable="false">OTM</th>
+                                            <th>TotalCost</th>
+                                            <th>RealisticEdge($)</th>
+                                            <th data-orderable="false">Qty</th>
+                                            <th>Effectiveness(%)</th>
                                             <th>Remain</th>
                                         </tr>
                                     </thead>
@@ -343,11 +346,14 @@
                                             <th>Expire</th>
                                             <th>Strike</th>
                                             <th>Type</th>
-                                            <th>SelPrice</th>
-                                            <th>SelQty</th>
+                                            <th>SellPrice</th>
                                             <th>BuyPrice</th>
-                                            <th>BuyQty</th>
-                                            <th>Margin</th>
+                                            <th>TotalFee</th>
+                                            <th>OTM</th>
+                                            <th>TotalCost</th>
+                                            <th>RealisticEdge($)</th>
+                                            <th>Qty</th>
+                                            <th>Effectiveness(%)</th>
                                             <th>Remain</th>
                                         </tr>
                                     </tfoot>
@@ -376,8 +382,8 @@
 <script>
 
 
-// var _websocket_adress = 'ws://localhost:8005';
-var _websocket_adress = 'ws://13.124.183.103:8005';
+var _websocket_adress = 'ws://localhost:8005';
+//var _websocket_adress = 'ws://13.124.183.103:8005';
 var _websocket;
 var selectedExchange = [];
 var selectedCoin = [];
@@ -389,17 +395,30 @@ var table = $('#tickers-table').DataTable({
     paging: false, // 페이징 사용 안함.
     responsive: true,
     orderMulti: true,
-    order: [[2, 'asc'], [3, 'asc'], [9, 'desc']],
+    order: [[3, 'asc'], [10, 'desc']],
     createdRow: function(row, data, dataIndex) {
-        if (data[5] > data[7]) {
-            const style = {
-              'background-color': 'rgb(255, 204, 204)',
-              'font-weight': 'bold'
-            };
 
-            $(row).css(style);
-            $(row).find('td:nth-child(3), td:nth-child(4), td:nth-child(10)').css(style);
+        const style_text_right = {
+          'text-align': 'right'
+        };
+        const style_text_center = {
+          'text-align': 'center'
+        };
+        const style_highlight = {
+          'background-color': 'rgb(255, 204, 204)',
+          'font-weight': 'bold',
+          'text-align': 'right'
+        };
+
+        $(row).css(style_text_right);
+
+        if (data[10] > 0) {
+            $(row).css(style_highlight);
+            $(row).find('td:nth-child(4), td:nth-child(11)').css(style_highlight);
         }
+
+        $(row).find('td:nth-child(1), td:nth-child(2), td:nth-child(3), td:nth-child(5)').css(style_text_center);
+
     }
 });
 
@@ -499,11 +518,14 @@ function updateTable(optionData) {
                             ticker.expire,
                             ticker.strike,
                             ticker.optionType,
-                            ticker.ask_price,
-                            ticker.ask_qty,
-                            ticker.bid_price,
-                            ticker.bid_qty,
-                            ticker.diff,
+                            ticker.sell_price,
+                            ticker.buy_price,
+                            ticker.total_fee,
+                            ticker.otm,
+                            ticker.total_cost,
+                            ticker.edge,
+                            ticker.qty,
+                            ticker.effectiveness,
                             ticker.remainDate,
                         ]);
 

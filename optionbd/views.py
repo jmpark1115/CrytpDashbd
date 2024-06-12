@@ -141,14 +141,6 @@ class Handler(object):
         # seek_premium_2 exchangers
         results of orderBook  = {'okx': {'240330': {'5000': {}, ... }, }
         '''
-        exs_bid_price = dict()
-        exs_bid_qty = dict()
-        exs_ask_price = dict()
-        exs_ask_qty = dict()
-        exb_bid_price = dict()
-        exb_bid_qty = dict()
-        exb_ask_price =dict()
-        exb_ask_qty = dict()
         optionInfo = list()
 
         if exs and exb and coin:
@@ -177,22 +169,53 @@ class Handler(object):
                         if exb_strike[optionType]['askPrice'] == 0:
                             continue
 
-                        exs_bid_price[optionType] = exs_strike[optionType]['bidPrice']
-                        # exs_ask_price[optionType] = exs_strike[optionType]['askPrice']
-                        # exb_bid_price[optionType] = exb_strike[optionType]['bidPrice']
-                        exb_ask_price[optionType] = exb_strike[optionType]['askPrice']
-                        exs_bid_qty[optionType]   = exs_strike[optionType]['bidQty']
-                        # exs_ask_qty[optionType]   = exs_strike[optionType]['askQty']
-                        # exb_bid_qty[optionType]   = exb_strike[optionType]['bidQty']
-                        exb_ask_qty[optionType]   = exb_strike[optionType]['askQty']
+                        sell_price = float(D(exs_strike[optionType]['bidPrice'])) # SELL거래소 매수값
+                        buy_price = float(D(exb_strike[optionType]['askPrice'])) # BUY거래소의 매도값
+                        sell_qty = float(D(exs_strike[optionType]['bidQty'])) # SELL거래소 수량
+                        buy_qty = float(D(exb_strike[optionType]['askQty'])) # BUY거래소의 수량
+                        sell_tr_fee_rate = float(D(exs_strike[optionType]['tr_fee_rate']))  # SELL거래소 거래수수료
+                        buy_tr_fee_rate = float(D(exb_strike[optionType]['tr_fee_rate']))  # BUY거래소의 거래수수료
+                        sell_ex_fee_rate = float(D(exs_strike[optionType]['ex_fee_rate']))  # SELL거래소 거래수수료
+                        buy_ex_fee_rate = float(D(exb_strike[optionType]['ex_fee_rate']))  # BUY거래소의 거래수수료
+                        sell_max_im_factor = float(D(exs_strike[optionType]['max_im_factor'][coin]))  # SELL거래소 max im factor
+                        buy_max_im_factor = float(D(exb_strike[optionType]['max_im_factor'][coin]))  # BUY거래소의 max im factor
+
 
                         # price_diff_percent 가 self.limit_price_diff_percent 보다 작으면 Skip
-                        price_diff = float(D(exs_bid_price[optionType]) - D(exb_ask_price[optionType]))
+                        price_diff = float(D(sell_price) - D(buy_price))
                         if price_diff < 0.0:
                             price_diff_abs = abs(price_diff)
-                            price_diff_percent = (price_diff_abs / float(exs_bid_price[optionType])) * 100
+                            price_diff_percent = (price_diff_abs / float(sell_price)) * 100
                             if price_diff_percent > self.limit_price_diff_percent:
                                 continue
+
+                        # total_fee = index가격 * 0.095%
+                        # 주의 : 일단 exs 기준으로 계산 (확인 필요)
+                        sell_index_price = float(D(exs_strike[optionType]['indexPrice']))
+                        buy_index_price = float(D(exb_strike[optionType]['indexPrice']))
+                        sell_fee = (sell_index_price * sell_tr_fee_rate) + (sell_index_price * sell_ex_fee_rate) # SELL거래소 Fee
+                        buy_fee = (buy_index_price * buy_tr_fee_rate) + (buy_index_price * buy_ex_fee_rate) # BUY거래소 Fee
+                        total_fee = sell_fee + buy_fee
+
+                        # 콜옵션 OTM (외가격) = max(행사가 - index가격, 0), 폿옵션 OTM (외가격) = max(index가격 - 행사가 , 0)
+                        # otm index가격 : 양 거래소 index 가격의 평군
+
+                        otm_index_price = (sell_index_price + buy_index_price) / 2
+                        otm = 0.0
+                        if optionType == 'C':
+                            otm = max(float(D(strike)) - otm_index_price, 0.0)
+                        else:
+                            otm = max(otm_index_price - float(D(strike)), 0.0)
+
+                        # total_margin = 매수 가격 + (인덱스 가격 * 매수 거래소 수수료율) + (Max IM Factor * 인덱스 가격) - OTM + 인덱스 가격 * 매도 거래소 수수료율)
+                        # 명칭은 totol_cost로 변경
+                        total_cost = buy_price + (buy_index_price + buy_tr_fee_rate) + (sell_max_im_factor * sell_index_price) - otm + (sell_index_price * sell_tr_fee_rate)
+
+                        # EDGE($) (Q 1개당 예상이익) : sell_price - buy_price - total_fee
+                        edge =  sell_price - buy_price - total_fee
+
+                        # EFFECTIVENESS(%) : EDGE / TOTAL_MAR * 100
+                        effectiveness = edge / total_cost * 100
 
                         margin = {
                             'coin': coin,
@@ -200,16 +223,32 @@ class Handler(object):
                             'expire': expire_date,
                             'strike': strike,
                             'optionType': optionType,
-                            'ask_price': exs_bid_price[optionType], # 매도거래소의 매수값
-                            'bid_price': exb_ask_price[optionType], # 매수거래소의 매도값
-                            'ask_qty': exs_bid_qty[optionType], # 매도거래소의 수량
-                            'bid_qty': exb_ask_qty[optionType], # 매수거래소의 수량
+                            'sell_price': self.format_float(sell_price, 1),  # 매도거래소의 매수값
+                            'buy_price': self.format_float(buy_price, 1),  # 매수거래소의 매도값
+                            'sell_qty': self.format_float(sell_qty),  # 매도거래소의 수량
+                            'buy_qty': self.format_float(buy_qty),  # 매수거래소의 수량
+                            'total_fee': self.format_float(total_fee, 1),  # 수수료 합계
+                            'otm': self.format_float(otm, 1), # 매도거래소 외가격
+                            'total_cost': self.format_float(total_cost, 1),  # 매매가능수량
+                            'edge': self.format_float(edge, 1),  # 개당 이익
+                            'qty': self.format_float(min(sell_qty, buy_qty)),
+                            'effectiveness': self.format_float(effectiveness, 2),
                             'diff' : price_diff, # margin
                             'remainDate': self.seek_remainDates(expire_date),
                         }
                         optionInfo.append(margin)
 
             return optionInfo, common_expire_dates
+
+    def format_float(self, float_number, decimal_places=None):
+        rounded_number = float_number
+        if decimal_places is not None and decimal_places >= 0:
+            rounded_number = round(rounded_number, decimal_places)
+        # .0으로 끝나는 경우 .0을 제거
+        if str(rounded_number).endswith(".0"):
+            rounded_number = int(rounded_number)
+
+        return rounded_number
 
     def get_premium_info(self, orderbooks):
         '''
