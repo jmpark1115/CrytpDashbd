@@ -117,9 +117,7 @@
                 <main>
                     <div class="container-fluid px-4">
                         <h1 class="mt-4">Dashboard</h1>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Dashboard</li>
-                        </ol>
+
                         <div class="row">
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-primary text-white mb-4">
@@ -181,7 +179,7 @@
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                Option DataTable
+                                Option Information
                             </div>
                             <div class="card-body">
                                 <label for="exchange-select">Exchanges:</label>
@@ -265,7 +263,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <label for="coin-select">Coins:</label>
+                                <label for="coin-select">Symbols:</label>
                                 <div id="coin-checkboxes">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input coin-checkbox" type="checkbox" value="ALL" id="coin-all" checked>
@@ -325,23 +323,29 @@
                                     </div>
                                 </div>
 
-
-<div class="row">
-    <div class="col-md-6">
-        <div class="mb-3">
-            <label for="profit-threshold" class="form-label">Profit threshold</label>
-            <input type="range" class="form-range" min="0" max="10" id="profit-threshold" style="background: linear-gradient(to right, white 0%, white 100%);">
-            <span id="profit-threshold-value" class="badge bg-secondary position-absolute" style="top: -20px; left: 50%; transform: translateX(-50%);"></span>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="mb-3">
-            <label for="days-until-expiry" class="form-label">Days until expiry</label>
-            <input type="range" class="form-range" min="0" max="10" id="days-until-expiry" style="background: linear-gradient(to right, white 0%, white 100%);">
-            <span id="days-until-expiry-value" class="badge bg-secondary position-absolute" style="top: -20px; left: 50%; transform: translateX(-50%);"></span>
-        </div>
-    </div>
-</div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="profit-threshold" class="form-label">Profit threshold</label>
+                                            <input type="range" class="form-range" min="0" max="100" id="profit-threshold" value="0" style="background: linear-gradient(to right, white 0%, white 100%);">
+                                            <div class="tooltip-container" id="profit-threshold-tooltip">
+                                                <span class="tooltip-text" id="profit-threshold-span"></span>
+                                                <span class="tooltip-text" id="profit-threshold-span-tail" style="display: none;">$</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="days-until-expiry" class="form-label">Days until expiry</label>
+                                            <input type="range" class="form-range" min="0" max="365" id="days-until-expiry" value="365" style="background: linear-gradient(to right, white 0%, white 100%);">
+                                            <div class="tooltip-container" id="days-until-expiry-tooltip">
+                                                <span class="tooltip-text" id="days-until-expiry-span"></span>
+                                                <span class="tooltip-text" id="days-until-expiry-span-tail" style="display: none;">days</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="card-body">
                                 <table id="tickers-table" class="display compact" width="100%">
@@ -352,14 +356,14 @@
                                             <th>Expire</th>
                                             <th>Strike</th>
                                             <th>Type</th>
-                                            <th data-orderable="false">SellPrice</th>
-                                            <th data-orderable="false">BuyPrice</th>
+                                            <th data-orderable="false">SellP</th>
+                                            <th data-orderable="false">BuyP</th>
                                             <th data-orderable="false">TotalFee</th>
                                             <th data-orderable="false">OTM</th>
                                             <th>TotalCost</th>
-                                            <th>RealisticEdge($)</th>
+                                            <th>Profit/Q</th>
                                             <th data-orderable="false">Qty</th>
-                                            <th>Effectiveness(%)</th>
+                                            <th>Eff.(%)</th>
                                             <th>Remain</th>
                                         </tr>
                                     </thead>
@@ -370,14 +374,14 @@
                                             <th>Expire</th>
                                             <th>Strike</th>
                                             <th>Type</th>
-                                            <th>SellPrice</th>
-                                            <th>BuyPrice</th>
+                                            <th>SellP</th>
+                                            <th>BuyP</th>
                                             <th>TotalFee</th>
                                             <th>OTM</th>
                                             <th>TotalCost</th>
-                                            <th>RealisticEdge($)</th>
+                                            <th>Profit/Q</th>
                                             <th>Qty</th>
-                                            <th>Effectiveness(%)</th>
+                                            <th>Eff.(%)</th>
                                             <th>Remain</th>
                                         </tr>
                                     </tfoot>
@@ -398,6 +402,12 @@
                                 <a href="#">Terms &amp; Conditions</a>
                             </div>
                         </div>
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted"></div>
+                            <div class="text-muted">
+                                contact : contact9853@gmail.com
+                            </div>
+                        </div>
                     </div>
                 </footer>
             </div>
@@ -406,8 +416,8 @@
 <script>
 
 
-//var _websocket_adress = 'ws://localhost:8005';
-var _websocket_adress = 'ws://43.201.193.133:8005';
+var _websocket_adress = 'ws://localhost:8005';
+//var _websocket_adress = 'ws://43.201.193.133:8005';
 var _websocket;
 var selectedExchange = [];
 var selectedCoin = [];
@@ -418,6 +428,9 @@ var optionData = {};
 var table = $('#tickers-table').DataTable({
     paging: false, // 페이징 사용 안함.
     responsive: true,
+    stateSave: true,
+    stateDuration: -1,
+    rowId: 'uniqueId',
     orderMulti: true,
     order: [[3, 'asc'], [10, 'desc']],
     initComplete: function() {
@@ -536,6 +549,12 @@ function updateTable(optionData) {
 
     table.clear();
 
+    // range slider 값 비교를 위한 값 추출
+    ptr_val = $('#profit-threshold').val();
+    ptrs_text = $('#profit-threshold-span').text();
+    due_val = $('#days-until-expiry').val();
+    dues_text = $('#days-until-expiry-span').text();
+
     // 데이터 갱신 및 하이라이트 처리
     $.each(optionData.tickers, function(index, ticker) {
 
@@ -543,7 +562,22 @@ function updateTable(optionData) {
         if (selectedExchange.includes('ALL') || selectedExchange.includes(ticker.exs)) {
             if (selectedCoin.includes('ALL') || selectedCoin.includes(ticker.coin)) {
                 if (selectedExpiration.includes('ALL') || selectedExpiration.includes(ticker.expire)) {
+
+                    if (due_val !== null && due_val.trim() !== '' && dues_text !== null && dues_text.trim() !== '') {
+                        if ( getDaysDifference(ticker.expire) > parseInt(due_val) ) {
+                            //console.log('ticker.expire : ' + ticker.expire);
+                            //console.log('due_val : ' + due_val);
+                            return true;
+                        }
+                    }
+
                     if (selectedOption.includes('ALL') || selectedOption.includes(ticker.optionType)) {
+
+                        if (ptr_val !== null && ptr_val.trim() !== '' && ptrs_text !== null && ptrs_text.trim() !== '') {
+                            if (ticker.edge < parseFloat(ptr_val)) {
+                                return true;
+                            }
+                        }
 
                         table.row.add([
                             ticker.coin,
@@ -575,6 +609,17 @@ function updateTable(optionData) {
     // 테이블 행에 하일라이트 추가
 
 }
+
+//현재날짜 yymmdd 형태로 변경
+function getDaysDifference(yymmdd) {
+  dateString = '20' + yymmdd;
+  const inputDate = new Date(dateString.substring(0, 4), parseInt(dateString.substring(4, 6)) - 1, dateString.substring(6, 8));
+  const today = new Date();
+  const diffInMillis = inputDate.getTime() - today.getTime();
+  const diffInDays = Math.floor(diffInMillis / (1000 * 60 * 60 * 24));
+  return diffInDays;
+}
+
 
 // ExpireDate Checkbox 갱신
 function populateExpirationCheckboxes(expirationDates, selectedExpiration) {
@@ -688,22 +733,33 @@ $(function() {
 
 
 
+    //range 및 tooltip 설정 관련
+    const profitThresholdRange = document.getElementById('profit-threshold');
+    const profitThresholdTooltip = document.getElementById('profit-threshold-tooltip');
+    const profitThresholdSpan = document.getElementById('profit-threshold-span');
+    const profitThresholdSpanTail = document.getElementById('profit-threshold-span-tail');
+    const daysUntilExpiryRange = document.getElementById('days-until-expiry');
+    const daysUntilExpiryTooltip = document.getElementById('days-until-expiry-tooltip');
+    const daysUntilExpirySpan = document.getElementById('days-until-expiry-span');
+    const daysUntilExpirySpanTail = document.getElementById('days-until-expiry-span-tail');
 
-    const profitThreshold = document.getElementById('profit-threshold');
-    const profitThresholdValue = document.getElementById('profit-threshold-value');
-
-    const daysUntilExpiry = document.getElementById('days-until-expiry');
-    const daysUntilExpiryValue = document.getElementById('days-until-expiry-value');
-
-    profitThreshold.addEventListener('input', () => {
-        profitThresholdValue.textContent = profitThreshold.value;
+    profitThresholdRange.addEventListener('input', () => {
+        profitThresholdSpan.textContent = profitThresholdRange.value;
+        profitThresholdSpanTail.style.display = 'inline';
+        updateTooltipPosition(profitThresholdRange, profitThresholdTooltip);
     });
 
-    daysUntilExpiry.addEventListener('input', () => {
-        daysUntilExpiryValue.textContent = daysUntilExpiry.value;
+    daysUntilExpiryRange.addEventListener('input', () => {
+        daysUntilExpirySpan.textContent = daysUntilExpiryRange.value;
+        daysUntilExpirySpanTail.style.display = 'inline';
+        updateTooltipPosition(daysUntilExpiryRange, daysUntilExpiryTooltip);
     });
 
-
+    function updateTooltipPosition(range, tooltip) {
+        const rangeRect = range.getBoundingClientRect();
+        tooltip.style.left = rangeRect.left + (rangeRect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
+        tooltip.style.top = rangeRect.top - tooltip.offsetHeight - 10 + 'px'; // Adjust top position as needed
+    }
 
     // 웹소켓 접속 및 데이터 갱신 시작
     doOpenOption();
@@ -712,6 +768,7 @@ $(function() {
 
 
 </script>
+
 {% endblock %}
 
 /*

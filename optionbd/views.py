@@ -64,7 +64,7 @@ class Handler(object):
         self.optionsInfo = list()
         self.expireDateInfo = list()
         self.executeTime = ''
-        self.limit_price_diff_percent = float(3.0)
+        self.limit_price_diff_percent = float(1.0)
         self.get_config()
         return
 
@@ -181,13 +181,10 @@ class Handler(object):
                         buy_max_im_factor = float(D(exb_strike[optionType]['max_im_factor'][coin]))  # BUY거래소의 max im factor
 
 
-                        # price_diff_percent 가 self.limit_price_diff_percent 보다 작으면 Skip
+                        # price_diff_percent 가 0 보다 작으면 Skip
                         price_diff = float(D(sell_price) - D(buy_price))
                         if price_diff < 0.0:
-                            price_diff_abs = abs(price_diff)
-                            price_diff_percent = (price_diff_abs / float(sell_price)) * 100
-                            if price_diff_percent > self.limit_price_diff_percent:
-                                continue
+                            continue
 
                         # total_fee = index가격 * 0.095%
                         # 주의 : 일단 exs 기준으로 계산 (확인 필요)
@@ -235,6 +232,7 @@ class Handler(object):
                             'effectiveness': self.format_float(effectiveness, 2),
                             'diff' : price_diff, # margin
                             'remainDate': self.seek_remainDates(expire_date),
+                            'uniqueId': f'{coin}-{exname_s}-{exname_b}-{expire_date}-{strike}-{optionType}',
                         }
                         optionInfo.append(margin)
 
