@@ -316,9 +316,33 @@
                                         </label>
                                     </div>
                                 </div>
-                                <input type="hidden" value="Y" id="isRestart" >
-                                <button id="stop-button">Stop</button>
-                            </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <input type="hidden" value="Y" id="isRestart" >
+                                            <button id="stop-button">Stop</button>
+                                         </div>
+                                    </div>
+                                </div>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label for="profit-threshold" class="form-label">Profit threshold</label>
+            <input type="range" class="form-range" min="0" max="10" id="profit-threshold" style="background: linear-gradient(to right, white 0%, white 100%);">
+            <span id="profit-threshold-value" class="badge bg-secondary position-absolute" style="top: -20px; left: 50%; transform: translateX(-50%);"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label for="days-until-expiry" class="form-label">Days until expiry</label>
+            <input type="range" class="form-range" min="0" max="10" id="days-until-expiry" style="background: linear-gradient(to right, white 0%, white 100%);">
+            <span id="days-until-expiry-value" class="badge bg-secondary position-absolute" style="top: -20px; left: 50%; transform: translateX(-50%);"></span>
+        </div>
+    </div>
+</div>
+
                             <div class="card-body">
                                 <table id="tickers-table" class="display compact" width="100%">
                                     <thead>
@@ -383,7 +407,7 @@
 
 
 //var _websocket_adress = 'ws://localhost:8005';
-var _websocket_adress = 'ws://13.124.183.103:8005';
+var _websocket_adress = 'ws://43.201.193.133:8005';
 var _websocket;
 var selectedExchange = [];
 var selectedCoin = [];
@@ -661,6 +685,25 @@ $(function() {
             doOpenOption();
         }
     });
+
+
+
+
+    const profitThreshold = document.getElementById('profit-threshold');
+    const profitThresholdValue = document.getElementById('profit-threshold-value');
+
+    const daysUntilExpiry = document.getElementById('days-until-expiry');
+    const daysUntilExpiryValue = document.getElementById('days-until-expiry-value');
+
+    profitThreshold.addEventListener('input', () => {
+        profitThresholdValue.textContent = profitThreshold.value;
+    });
+
+    daysUntilExpiry.addEventListener('input', () => {
+        daysUntilExpiryValue.textContent = daysUntilExpiry.value;
+    });
+
+
 
     // 웹소켓 접속 및 데이터 갱신 시작
     doOpenOption();
