@@ -186,7 +186,7 @@ class Bnws:
 
 
                     keys = self.tickers.keys()
-                    print(f"tickers.keys : {keys}")
+                    # print(f"tickers.keys : {keys}")
 
             except websockets.exceptions.ConnectionClosed:
                 logger.error(f'Connection closed : {self.target}')
