@@ -1,3 +1,7 @@
+import asyncio
+import threading
+from exchange.bnws import Bnws
+
 import time
 import requests
 import logging
@@ -33,6 +37,8 @@ class Bn(object):
         self.tr_fee_rate = 0.0003 # 거래수수료율 (0.03%)
         self.ex_fee_rate = 0.00015 # 행사수수료율 (0.015%)
         self.max_im_factor = {"BTC": 0.15, "ETH": 0.15} # BB 값으로 통일 (향후 교체 필요)
+        self.t1 = None
+        self.bnws = None
         self.get_config()
         return
 
@@ -43,12 +49,26 @@ class Bn(object):
             self.payment = bot_conf.payment.upper()
             self.type = bot_conf.type
             self.exchanger = bot_conf.exchanger.lower()
+            # Bnws Start
+            logger.debug('start loop_async')
+            self.loop_async()
         except Exception as ex:
             self.target = 'BTC'
             self.payment = 'USD'
             self.type = ''
         self.symbol = f'{self.target}-{self.payment}' # BTC-USD
         self.nickname = self.exchanger+'_'+str(self.id)+'_'+self.symbol
+        return
+
+    def run_websocket(self):
+        self.bnws = Bnws()
+        asyncio.run(self.bnws.connect_and_listen(self.target))
+
+    def loop_async(self):
+        self.t1 = threading.Thread(target=self.run_websocket)
+        if self.t1:
+            self.t1.deamon = True
+            self.t1.start()
         return
 
     def http_request(self, method, path, params=None, headers=None, auth=None):
@@ -107,6 +127,11 @@ class Bn(object):
 
 
     def Orderbook(self):
+
+        # 웹소켓 결과물 반환
+        if self.bnws:
+            return {self.exchanger: self.bnws.tickers, self.target: self.target}
+
         '''
         GET /ticker
         :return:
