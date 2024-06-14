@@ -133,7 +133,8 @@ class Bnws:
             await websocket.send(json.dumps({"method": "SUBSCRIBE", "params": self.symbols, "id": 1}))
 
             # ping/pong 처리를 위한 task 생성
-            ping_pong_task = asyncio.create_task(self.handle_ping_pong(websocket))
+            # ping_pong_task = asyncio.create_task(self.handle_ping_pong(websocket))
+            ping_pong_task = asyncio.ensure_future(self.handle_ping_pong(websocket))
 
             try:
                 async for message in websocket:
