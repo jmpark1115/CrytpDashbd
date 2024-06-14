@@ -1,5 +1,6 @@
 import asyncio
 import threading
+import concurrent.futures
 from exchange.bnws import Bnws
 
 import time
@@ -62,7 +63,11 @@ class Bn(object):
 
     def run_websocket(self):
         self.bnws = Bnws()
-        asyncio.run(self.bnws.connect_and_listen(self.target))
+        # asyncio.run(self.bnws.connect_and_listen(self.target))
+        loop = asyncio.new_event_loop()  # 새 이벤트 루프 생성
+        asyncio.set_event_loop(loop)  # 현재 스레드의 이벤트 루프 설정
+        loop.run_until_complete(self.bnws.connect_and_listen(self.target))
+        loop.close()  # 이벤트 루프 종료
 
     def loop_async(self):
         self.t1 = threading.Thread(target=self.run_websocket)

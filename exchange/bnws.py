@@ -213,4 +213,8 @@ class Bnws:
 if __name__ == "__main__":
     bnws = Bnws()
     coin = 'ETH'
-    asyncio.run(bnws.connect_and_listen(coin))
+    # asyncio.run(bnws.connect_and_listen(coin))
+    loop = asyncio.new_event_loop()  # 새 이벤트 루프 생성
+    asyncio.set_event_loop(loop)  # 현재 스레드의 이벤트 루프 설정
+    loop.run_until_complete(bnws.connect_and_listen(coin))
+    loop.close()  # 이벤트 루프 종료
