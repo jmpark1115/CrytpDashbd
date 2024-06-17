@@ -11227,7 +11227,7 @@ body {
 
 .datatable-top::after,
 .datatable-bottom::after {
-3  clear: both;
+  clear: both;
   content: " ";
   display: table;
 }
