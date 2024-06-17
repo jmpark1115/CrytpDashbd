@@ -11227,7 +11227,7 @@ body {
 
 .datatable-top::after,
 .datatable-bottom::after {
-  clear: both;
+3  clear: both;
   content: " ";
   display: table;
 }
@@ -11241,4 +11241,23 @@ body {
   width: 20px !important;
   font-size: 0.75rem;
   border-radius: 0.375rem !important;
+}
+
+/* 로그인 버튼 말풍선 부분 추가 : 20240617 */
+.tooltip-construction {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f0f0f0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  z-index: 10;
+  display: none; /* Initially hidden */
+}
+
+.nav-item.dropdown:hover .tooltip-construction {
+  display: block; /* Show on hover */
 }

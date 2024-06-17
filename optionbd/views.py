@@ -232,7 +232,6 @@ class Handler(object):
                             'effectiveness': self.format_float(effectiveness, 2),
                             'diff' : price_diff, # margin
                             'remainDate': self.seek_remainDates(expire_date),
-                            'uniqueId': f'{coin}-{exname_s}-{exname_b}-{expire_date}-{strike}-{optionType}',
                         }
                         optionInfo.append(margin)
 
@@ -242,11 +241,15 @@ class Handler(object):
         rounded_number = float_number
         if decimal_places is not None and decimal_places >= 0:
             rounded_number = round(rounded_number, decimal_places)
+
         # .0으로 끝나는 경우 .0을 제거
         if str(rounded_number).endswith(".0"):
             rounded_number = int(rounded_number)
 
-        return rounded_number
+        # 3자리 마다 콤마 찍기
+        rounded_number_str = f"{rounded_number:,}"
+
+        return rounded_number_str
 
     def get_premium_info(self, orderbooks):
         '''

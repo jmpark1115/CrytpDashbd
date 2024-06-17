@@ -8,6 +8,9 @@
 <script src="{% static 'js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'js/dataTables.buttons.min.js' %}"></script>
 <script src="{% static 'js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'js/websocket_binance_upbit.js' %}"></script>
+<script src="{% static 'js/websocket_optionbd.js' %}"></script>
+
 {% endblock script %}
 
 {% block style %}
@@ -40,6 +43,7 @@
                         <li><hr class="dropdown-divider" /></li>
                         <li><a class="dropdown-item" href="#!">Logout</a></li>
                     </ul>
+                    <span class="tooltip-construction">Under Construction</span>
                 </li>
             </ul>
         </nav>
@@ -121,37 +125,37 @@
                         <div class="row">
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">BTC Primary</div>
+                                    <div class="card-body">BTC</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
 <!--                                        <a class="small text-white stretched-link" href="#">View Details</a>-->
-                                        <div class="small text-white">$ 50,000 <i class="fas fa-angle-right"></i> W 78,000,000</div>
+                                        <div class="small text-white">$ <span id="binance_btc_price"></span> USDT / W <span id="upbit_btc_price"></span> WON</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-warning text-white mb-4">
-                                    <div class="card-body">ETH Warning</div>
+                                    <div class="card-body">ETH</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
 <!--                                        <a class="small text-white stretched-link" href="#">View Details</a>-->
-                                        <div class="small text-white">$ 50,000 <i class="fas fa-angle-right"></i> W 78,000,000</div>
+                                        <div class="small text-white">$ <span id="binance_eth_price"></span> USDT / W <span id="upbit_eth_price"></span> WON</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-success text-white mb-4">
-                                    <div class="card-body">SOL success</div>
+                                    <div class="card-body">SOL</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
 <!--                                        <a class="small text-white stretched-link" href="#">View Details</a>-->
-                                        <div class="small text-white">$ 50,000 <i class="fas fa-angle-right"></i> W 78,000,000</div>
+                                        <div class="small text-white">$ <span id="binance_sol_price"></span> USDT / W <span id="upbit_sol_price"></span> WON</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-danger text-white mb-4">
-                                    <div class="card-body">USDT danger</div>
+                                    <div class="card-body">USDT</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
 <!--                                        <a class="small text-white stretched-link" href="#">View Details</a>-->
-                                        <div class="small text-white">$ 50,000 <i class="fas fa-angle-right"></i> W 78,000,000</div>
+                                        <div class="small text-white">$ <span id="binance_usdt_price"></span> 1 USDT / W <span id="upbit_usdt_price"></span> WON</div>
                                     </div>
                                 </div>
                             </div>
@@ -182,7 +186,7 @@
                                 Option Information
                             </div>
                             <div class="card-body">
-                                <label for="exchange-select">Exchanges:</label>
+                                <label for="exchange-select">Exchanges (BN: Binance. DRB: Deribit, OKX: Okx, BB: Bybit) :</label>
                                 <div id="exchange-checkboxes">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input exchange-checkbox" type="checkbox" value="ALL" id="exchange-all" checked>
@@ -395,7 +399,7 @@
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
                         <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2023</div>
+                            <div class="text-muted">Copyright &copy; Your Website 2024</div>
                             <div>
                                 <a href="#">Privacy Policy</a>
                                 &middot;
@@ -415,22 +419,10 @@
 
 <script>
 
-
-//var _websocket_adress = 'ws://localhost:8005';
-var _websocket_adress = 'ws://43.201.193.133:8005';
-var _websocket;
-var selectedExchange = [];
-var selectedCoin = [];
-var selectedOption = [];
-var selectedExpiration = [];
-var expirationDatesAll = [];
-var optionData = {};
-var table = $('#tickers-table').DataTable({
+// Datatable 최기 세팅
+const table = $('#tickers-table').DataTable({
     paging: false, // 페이징 사용 안함.
     responsive: true,
-    stateSave: true,
-    stateDuration: -1,
-    rowId: 'uniqueId',
     orderMulti: true,
     order: [[3, 'asc'], [10, 'desc']],
     initComplete: function() {
@@ -450,322 +442,146 @@ var table = $('#tickers-table').DataTable({
         const style_text_center = {
           'text-align': 'center'
         };
+        const style_text_red = {
+          'color': 'red'
+        };
+        const style_text_green = {
+          'color': 'green'
+        };
         const style_highlight = {
-          'background-color': 'rgb(255, 204, 204)',
+          'background-color': 'rgb(255, 228, 225)',
           'font-weight': 'bold',
           'text-align': 'right'
         };
 
+        $(row).attr('id', data[0] +'-'+ data[1] +'-'+ data[2] +'-'+ data[3] +'-'+ data[4]);
         $(row).css(style_text_right);
 
         if (data[10] > 0) {
             $(row).css(style_highlight);
             $(row).find('td').css(style_highlight);
         }
-
+        $(row).find('td:nth-child(1)').addClass("dt-control");
         $(row).find('td:nth-child(1), td:nth-child(2), td:nth-child(3), td:nth-child(5)').css(style_text_center);
+        $(row).find('td:nth-child(6)').css(style_text_red);
+        $(row).find('td:nth-child(7)').css(style_text_green);
 
     }
 });
 
-//option websocket init
-function _option_init() {
+const detailRows = [];
 
-    const currentTimeMillis = Date.now();
-    const grade = 'vip';
-    const paramStr = '?grade=' + grade + '&timestamp=' + currentTimeMillis;
-    console.log(paramStr);
+table.on('click', 'tbody td.dt-control', function () {
+    let tr = event.target.closest('tr');
+    let row = table.row(tr);
+    let idx = detailRows.indexOf(tr.id);
 
-    _websocket = new WebSocket(_websocket_adress+paramStr);
-    _websocket.onopen = function(e) { _option_open(e) };
-    _websocket.onclose = function(e) { _option_close(e) };
-    _websocket.onmessage = function(e) { _option_message(e) }
-    _websocket.onerror = function(e) { _option_error(e) };
-
-}
-//option websocket open
-function _option_open() {
-    console.log("option webSocket opened !!!");
-}
-//option websocket close
-function _option_close() {
-    console.log("option webSocket closed !!!");
-    console.log($('#isRestart').val());
-    if($('#isRestart').val() == 'Y'){
-        console.log("try reconnection !!!");
-        _option_init();
-    }
-}
-//option websocket open
-function _option_error() {
-    console.log( "option webSocket error : ", e.data );
-}
-
-//option websocket message process
-function _option_message(e) {
-
-    //console.log(event.data);
-    //JSON Object 변환 및 추출
-    jsonData = JSON.parse(event.data);
-    optionData.expirationDates = jsonData.expireDate;
-    optionData.tickers = jsonData.data;
-    optionData.timestamp = jsonData.executeTime;
-    updateTable(optionData);
-
-}
-
-// Option Datatable 갱신
-function updateTable(optionData) {
-
-    // OptionTickers가 유효하지 않으면 업데이트하지 않음
-    if (!(optionData && optionData.tickers.length > 0 &&
-       optionData.expirationDates && optionData.expirationDates.length>0)) {
-        console.log("OptionTickers Invalid")
-        return;
-    }
-
-    // 선택된 Exchange 수집
-    selectedExchange = $('.exchange-checkbox:checked').map(function() {
-        return this.value;
-    }).get();
-
-    // 선택된 Coin 수집
-    selectedCoin = $('.coin-checkbox:checked').map(function() {
-        return this.value;
-    }).get();
-
-    // 선택된 Option 수집
-    selectedOption = $('.option-checkbox:checked').map(function() {
-        return this.value;
-    }).get();
-
-    // 선택된 ExpireDate 수집
-    selectedExpiration = $('.expiration-checkbox:checked').map(function() {
-        return this.value;
-    }).get();
-
-    // ExpireDate 갱신
-    populateExpirationCheckboxes(optionData.expirationDates, selectedExpiration);
-
-    table.clear();
-
-    // range slider 값 비교를 위한 값 추출
-    ptr_val = $('#profit-threshold').val();
-    ptrs_text = $('#profit-threshold-span').text();
-    due_val = $('#days-until-expiry').val();
-    dues_text = $('#days-until-expiry-span').text();
-
-    // 데이터 갱신 및 하이라이트 처리
-    $.each(optionData.tickers, function(index, ticker) {
-
-        // 선택한 exchange, coin, expire, option 순으로 일치여부 확인
-        if (selectedExchange.includes('ALL') || selectedExchange.includes(ticker.exs)) {
-            if (selectedCoin.includes('ALL') || selectedCoin.includes(ticker.coin)) {
-                if (selectedExpiration.includes('ALL') || selectedExpiration.includes(ticker.expire)) {
-
-                    if (due_val !== null && due_val.trim() !== '' && dues_text !== null && dues_text.trim() !== '') {
-                        if ( getDaysDifference(ticker.expire) > parseInt(due_val) ) {
-                            //console.log('ticker.expire : ' + ticker.expire);
-                            //console.log('due_val : ' + due_val);
-                            return true;
-                        }
-                    }
-
-                    if (selectedOption.includes('ALL') || selectedOption.includes(ticker.optionType)) {
-
-                        if (ptr_val !== null && ptr_val.trim() !== '' && ptrs_text !== null && ptrs_text.trim() !== '') {
-                            if (ticker.edge < parseFloat(ptr_val)) {
-                                return true;
-                            }
-                        }
-
-                        table.row.add([
-                            ticker.coin,
-                            ticker.exs,
-                            ticker.expire,
-                            ticker.strike,
-                            ticker.optionType,
-                            ticker.sell_price,
-                            ticker.buy_price,
-                            ticker.total_fee,
-                            ticker.otm,
-                            ticker.total_cost,
-                            ticker.edge,
-                            ticker.qty,
-                            ticker.effectiveness,
-                            ticker.remainDate,
-                        ]);
-
-                    }
-                }
-            }
+    if (row.child.isShown()) {
+        tr.classList.add('parent');
+        row.child().show();
+        if (idx === -1) {
+            detailRows.push(tr.id);
         }
+    }
+    else {
+        tr.classList.remove('parent');
+        row.child.hide();
+        detailRows.splice(idx, 1);
+    }
+});
 
+table.on('draw', () => {
+    detailRows.forEach((id, i) => {
+        let el = document.querySelector('#' + id + ' td.dt-control');
+
+        if (el) {
+            el.dispatchEvent(new Event('click', { bubbles: true }));
+        }
     });
-
-    // 테이블 다시 그리기
-    table.draw();
-
-    // 테이블 행에 하일라이트 추가
-
-}
-
-//현재날짜 yymmdd 형태로 변경
-function getDaysDifference(yymmdd) {
-  dateString = '20' + yymmdd;
-  const inputDate = new Date(dateString.substring(0, 4), parseInt(dateString.substring(4, 6)) - 1, dateString.substring(6, 8));
-  const today = new Date();
-  const diffInMillis = inputDate.getTime() - today.getTime();
-  const diffInDays = Math.floor(diffInMillis / (1000 * 60 * 60 * 24));
-  return diffInDays;
-}
+});
 
 
-// ExpireDate Checkbox 갱신
-function populateExpirationCheckboxes(expirationDates, selectedExpiration) {
+// exchange-checkboxes event handler
+$('#exchange-checkboxes').on('change', '.exchange-checkbox', function() {
+    $('.exchange-checkbox').not(this).prop('checked', false);
+});
 
-    //console.log('expirationDates', expirationDates.toString());
-    //console.log('selectedExpiration', selectedExpiration.toString());
-    expirationDatesAll = expirationDatesAll.concat(expirationDates);
-    expirationDatesAll = expirationDatesAll.filter((item, pos) => expirationDatesAll.indexOf(item) === pos).sort();
-    //console.log('expirationDatesAll' ,expirationDatesAll.toString());
+// coin-checkboxes event handler
+$('#coin-checkboxes').on('change', '.coin-checkbox', function() {
+    $('.coin-checkbox').not(this).prop('checked', false);
+});
 
-    // 기존 체크박스 제거 후 갱신
-    const container = $('#expiration-date-checkboxes');
-    container.empty();
-
-    let allChecked = '';
-    if(selectedExpiration.includes('ALL')){
-        allChecked = 'checked'
+// expiration-date-checkboxes event handler
+$('#expiration-date-checkboxes').on('change', '.expiration-checkbox', function() {
+    if (this.value === 'ALL') {
+        // '전체' 선택 시 다른 체크박스 해제
+        $('.expiration-checkbox').not(this).prop('checked', false);
+    } else {
+        // '전체'를 제외한 다른 선택 시 '전체' 해제
+        $('#expire-all').prop('checked', false);
     }
-    // '전체' 선택 옵션 무조건 추가
-    const allCheckboxHtml = `
-        <div class="form-check form-check-inline" style="">
-            <input class="form-check-input expiration-checkbox" type="checkbox" value="ALL" id="expire-all" ${allChecked}>
-            <label class="form-check-label" for="expire-all">
-                ALL
-            </label>
-        </div>
-    `;
-    container.prepend(allCheckboxHtml);
+});
 
-    expirationDatesAll.forEach(function(expireDate) {
-        let checked = '';
-        if(selectedExpiration.includes(expireDate)){
-            checked = 'checked'
-        }
-        let displayMode = '';
-        if(!expirationDates.includes(expireDate)){
-            displayMode = 'display:none';
-        }
+// option-checkboxes event handler
+$('#option-checkboxes').on('change', '.option-checkbox', function() {
+    $('.option-checkbox').not(this).prop('checked', false);
+});
 
-        // 새로운 만료일만 추가
-        const checkboxHtml = `
-            <div class="form-check form-check-inline" style="${displayMode}">
-                <input class="form-check-input expiration-checkbox" type="checkbox" value="${expireDate}" id="expire-${expireDate}" ${checked}>
-                <label class="form-check-label" for="expire-${expireDate}">
-                    ${expireDate}
-                </label>
-            </div>
-        `;
-        container.append(checkboxHtml);
-    });
+// stop-button event handler
+$('#stop-button').on('click', function() {
 
+    if (this.textContent === 'Stop') {
+        this.textContent = 'Start'
+        $('#isRestart').val('N')
+        doCloseOption();
 
-}
+    } else {
+        this.textContent = 'Stop'
+        $('#isRestart').val('Y')
+        doOpenOption();
+    }
+});
 
-// Open option websocket
-function doOpenOption() {
-    //console.log('====> doOpenOptionTable');
-    _option_init();
-}
+//range 및 tooltip 설정 관련
+const profitThresholdRange = document.getElementById('profit-threshold');
+const profitThresholdTooltip = document.getElementById('profit-threshold-tooltip');
+const profitThresholdSpan = document.getElementById('profit-threshold-span');
+const profitThresholdSpanTail = document.getElementById('profit-threshold-span-tail');
+const daysUntilExpiryRange = document.getElementById('days-until-expiry');
+const daysUntilExpiryTooltip = document.getElementById('days-until-expiry-tooltip');
+const daysUntilExpirySpan = document.getElementById('days-until-expiry-span');
+const daysUntilExpirySpanTail = document.getElementById('days-until-expiry-span-tail');
 
-// close option websocket
-function doCloseOption() {
-  if (_websocket) {
-    _websocket.close();
-    _websocket = null;
-  }
+// profitThresholdRange event handler
+profitThresholdRange.addEventListener('input', () => {
+    profitThresholdSpan.textContent = profitThresholdRange.value;
+    profitThresholdSpanTail.style.display = 'inline';
+    updateTooltipPosition(profitThresholdRange, profitThresholdTooltip);
+});
+
+// daysUntilExpiryRang event handler
+daysUntilExpiryRange.addEventListener('input', () => {
+    daysUntilExpirySpan.textContent = daysUntilExpiryRange.value;
+    daysUntilExpirySpanTail.style.display = 'inline';
+    updateTooltipPosition(daysUntilExpiryRange, daysUntilExpiryTooltip);
+});
+
+function updateTooltipPosition(range, tooltip) {
+    const rangeRect = range.getBoundingClientRect();
+    tooltip.style.left = rangeRect.left + (rangeRect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
+    tooltip.style.top = rangeRect.top - tooltip.offsetHeight - 10 + 'px'; // Adjust top position as needed
 }
 
 $(function() {
 
-    // exchange-checkboxes event handler
-    $('#exchange-checkboxes').on('change', '.exchange-checkbox', function() {
-        $('.exchange-checkbox').not(this).prop('checked', false);
-    });
-
-    // coin-checkboxes event handler
-    $('#coin-checkboxes').on('change', '.coin-checkbox', function() {
-        $('.coin-checkbox').not(this).prop('checked', false);
-    });
-
-    // expiration-date-checkboxes event handler
-    $('#expiration-date-checkboxes').on('change', '.expiration-checkbox', function() {
-        if (this.value === 'ALL') {
-            // '전체' 선택 시 다른 체크박스 해제
-            $('.expiration-checkbox').not(this).prop('checked', false);
-        } else {
-            // '전체'를 제외한 다른 선택 시 '전체' 해제
-            $('#expire-all').prop('checked', false);
-        }
-    });
-
-    // option-checkboxes event handler
-    $('#option-checkboxes').on('change', '.option-checkbox', function() {
-        $('.option-checkbox').not(this).prop('checked', false);
-    });
-
-    // stop-button event handler
-    $('#stop-button').on('click', function() {
-
-        if (this.textContent === 'Stop') {
-            this.textContent = 'Start'
-            $('#isRestart').val('N')
-            doCloseOption();
-
-        } else {
-            this.textContent = 'Stop'
-            $('#isRestart').val('Y')
-            doOpenOption();
-        }
-    });
-
-
-
-    //range 및 tooltip 설정 관련
-    const profitThresholdRange = document.getElementById('profit-threshold');
-    const profitThresholdTooltip = document.getElementById('profit-threshold-tooltip');
-    const profitThresholdSpan = document.getElementById('profit-threshold-span');
-    const profitThresholdSpanTail = document.getElementById('profit-threshold-span-tail');
-    const daysUntilExpiryRange = document.getElementById('days-until-expiry');
-    const daysUntilExpiryTooltip = document.getElementById('days-until-expiry-tooltip');
-    const daysUntilExpirySpan = document.getElementById('days-until-expiry-span');
-    const daysUntilExpirySpanTail = document.getElementById('days-until-expiry-span-tail');
-
-    profitThresholdRange.addEventListener('input', () => {
-        profitThresholdSpan.textContent = profitThresholdRange.value;
-        profitThresholdSpanTail.style.display = 'inline';
-        updateTooltipPosition(profitThresholdRange, profitThresholdTooltip);
-    });
-
-    daysUntilExpiryRange.addEventListener('input', () => {
-        daysUntilExpirySpan.textContent = daysUntilExpiryRange.value;
-        daysUntilExpirySpanTail.style.display = 'inline';
-        updateTooltipPosition(daysUntilExpiryRange, daysUntilExpiryTooltip);
-    });
-
-    function updateTooltipPosition(range, tooltip) {
-        const rangeRect = range.getBoundingClientRect();
-        tooltip.style.left = rangeRect.left + (rangeRect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
-        tooltip.style.top = rangeRect.top - tooltip.offsetHeight - 10 + 'px'; // Adjust top position as needed
-    }
-
-    // 웹소켓 접속 및 데이터 갱신 시작
+    // Option table 관련 웹소켓 접속 및 데이터 갱신 시작
     doOpenOption();
 
-});
+    // 실시간 Price 관련 웹소켓 접속 및 데이터 갱신 시작
+    doOpenBinance();
+    doOpenUpbit();
 
+});
 
 </script>
 
