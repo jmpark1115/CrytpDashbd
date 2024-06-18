@@ -93,7 +93,7 @@ class Bnws:
                     price = float(res['indexPrice'])
                     self.index_price_map[index_name] = price
         except Exception as ex:
-            logger.error(f'Exception in IndexTickers {ex}')
+            logger.error(f'Exception in get_index_price {ex}')
 
 
     def get_symbols(self, coin):
@@ -189,7 +189,7 @@ class Bnws:
                     # print(f"tickers.keys : {keys}")
 
             except websockets.exceptions.ConnectionClosed:
-                logger.error(f'Connection closed : {self.target}')
+                logger.error(f'Connection closed in connect_and_listen : {self.target}')
             finally:
                 # ping/pong task 취소
                 ping_pong_task.cancel()

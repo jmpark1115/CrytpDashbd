@@ -98,7 +98,7 @@ class Drb(object):
                     price = float(res['result']['index_price'])
                     return price
         except Exception as ex:
-            logger.error(f'Exception in IndexTickers {ex}')
+            logger.error(f'Exception in get_index_price {ex}')
         return 0
 
 
@@ -160,7 +160,7 @@ class Drb(object):
                         tickers[expire_data][strike][side] = refine_info
                     self.tickers = tickers
         except Exception as ex:
-            logger.error(f'Exception in OptionTickers {ex}')
+            logger.error(f'Exception in Orderbook {ex}')
         return {self.exchanger: self.tickers, self.target: self.target}
 
     def ticker_filter(self, expire_data):

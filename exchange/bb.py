@@ -132,7 +132,7 @@ class Bb(object):
                         tickers[expire_data][strike][side] = refine_info
                     self.tickers = tickers
         except Exception as ex:
-            logger.error(f'Exception in OptionTickers {ex}')
+            logger.error(f'Exception in Orderbook {ex}')
         return {self.exchanger: self.tickers, self.target: self.target}
 
     def ticker_filter(self, expire_data):
