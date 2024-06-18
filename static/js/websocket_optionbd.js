@@ -1,5 +1,6 @@
 //const _websocket_adress = 'ws://localhost:8005';
 const _websocket_adress = 'ws://13.209.152.192:8005';
+
 var _websocket;
 var selectedExchange = [];
 var selectedCoin = [];
