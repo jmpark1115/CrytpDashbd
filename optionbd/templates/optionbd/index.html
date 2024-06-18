@@ -457,7 +457,8 @@ const table = $('#tickers-table').DataTable({
         $(row).attr('id', data[0] +'-'+ data[1] +'-'+ data[2] +'-'+ data[3] +'-'+ data[4]);
         $(row).css(style_text_right);
 
-        if (data[10] > 0) {
+        const profit = parseFloat(data[10].replace(",", ""));
+        if (profit > 0) {
             $(row).css(style_highlight);
             $(row).find('td').css(style_highlight);
         }
