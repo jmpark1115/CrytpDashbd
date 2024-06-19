@@ -462,6 +462,20 @@ const table = $('#tickers-table').DataTable({
             $(row).css(style_highlight);
             $(row).find('td').css(style_highlight);
         }
+
+        const qty_array = data[11].split(":").map(Number);
+
+        if (qty_array[0] === qty_array[1]) {
+            $(row).find('td:nth-child(12)').text(qty_array[0])
+            $(row).find('td:nth-child(12)').css(style_text_red);
+        } else if (qty_array[0] === qty_array[2]){
+            $(row).find('td:nth-child(12)').text(qty_array[0])
+            $(row).find('td:nth-child(12)').css(style_text_green);
+        } else {
+            console.log("첫 번째 값과 같은 값이 없습니다.");
+        }
+
+
         $(row).find('td:nth-child(1)').addClass("dt-control");
         $(row).find('td:nth-child(1), td:nth-child(2), td:nth-child(3), td:nth-child(5)').css(style_text_center);
         $(row).find('td:nth-child(6)').css(style_text_red);

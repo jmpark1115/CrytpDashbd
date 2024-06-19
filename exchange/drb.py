@@ -94,7 +94,7 @@ class Drb(object):
             }
             res = self.http_request('GET', path, request)
             if isinstance(res, dict):
-                if 'result' in res and res['result']:
+                if 'result' in res and res['result']['index_price']:
                     price = float(res['result']['index_price'])
                     return price
         except Exception as ex:

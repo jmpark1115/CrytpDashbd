@@ -11,7 +11,7 @@ except Exception as ex:
     logger.debug('import error %s %s' %(__file__, ex))
     # raise ValueError
 
-API_URL = 'https://api.bybit.com//v5'
+API_URL = 'https://api.bybit.com/v5'
 
 class Bb(object):
     def __init__(self, id):
@@ -98,39 +98,40 @@ class Bb(object):
                 if 'result' in res and res['result']['list']:
                     time = int(res['time']) if res['time'] else 0
                     # res 데이터 파싱
-                    for data in res['result']['list']:
-                        ticker = data['symbol'].split('-')
-                        date = datetime.strptime(ticker[1], '%d%b%y')
-                        expire_data = date.strftime('%y%m%d')
-                        if self.ticker_filter(expire_data):
-                            continue
+                    if res['result']['list']:
+                        for data in res['result']['list']:
+                            ticker = data['symbol'].split('-')
+                            date = datetime.strptime(ticker[1], '%d%b%y')
+                            expire_data = date.strftime('%y%m%d')
+                            if self.ticker_filter(expire_data):
+                                continue
 
-                        strike = ticker[2]
-                        side = ticker[3]
-                        refine_info = dict()
-                        refine_info['askPrice'] = float(D(data['ask1Price'])) if data['ask1Price'] else 0
-                        refine_info['askQty'] = float(D(data['ask1Size']) ) if data['ask1Size'] else 0
-                        refine_info['bidPrice'] = float(D(data['bid1Price'])) if data['bid1Price'] else 0
-                        refine_info['bidQty'] = float(D(data['bid1Size']) ) if data['bid1Size'] else 0
-                        refine_info['indexPrice'] = float(D(data['indexPrice'])) if data['indexPrice'] else 0
-                        refine_info['tr_fee_rate'] = self.tr_fee_rate
-                        refine_info['ex_fee_rate'] = self.ex_fee_rate
-                        refine_info['max_im_factor'] = self.max_im_factor
-                        refine_info['timestamp'] = time
-                        """
-                        refine_info:
-                        {'230607': {'23500': {'C': {'askPrice': '0.1285', 'askQty': '3510', 'bidPrice': '0.1205', 'bidQty': '3510', 'timestamp': '1686124069112'}}}}
-                        """
-                        # if not coin in tickers :
-                        #     tickers[coin] = dict()
-                        if not expire_data in tickers:
-                            tickers[expire_data] = dict()
-                        if not strike in tickers[expire_data]:
-                            tickers[expire_data][strike] = dict()
-                        if not side in tickers[expire_data][strike]:
-                            tickers[expire_data][strike][side] = dict()
-                        tickers[expire_data][strike][side] = refine_info
-                    self.tickers = tickers
+                            strike = ticker[2]
+                            side = ticker[3]
+                            refine_info = dict()
+                            refine_info['askPrice'] = float(D(data['ask1Price'])) if data['ask1Price'] else 0
+                            refine_info['askQty'] = float(D(data['ask1Size']) ) if data['ask1Size'] else 0
+                            refine_info['bidPrice'] = float(D(data['bid1Price'])) if data['bid1Price'] else 0
+                            refine_info['bidQty'] = float(D(data['bid1Size']) ) if data['bid1Size'] else 0
+                            refine_info['indexPrice'] = float(D(data['indexPrice'])) if data['indexPrice'] else 0
+                            refine_info['tr_fee_rate'] = self.tr_fee_rate
+                            refine_info['ex_fee_rate'] = self.ex_fee_rate
+                            refine_info['max_im_factor'] = self.max_im_factor
+                            refine_info['timestamp'] = time
+                            """
+                            refine_info:
+                            {'230607': {'23500': {'C': {'askPrice': '0.1285', 'askQty': '3510', 'bidPrice': '0.1205', 'bidQty': '3510', 'timestamp': '1686124069112'}}}}
+                            """
+                            # if not coin in tickers :
+                            #     tickers[coin] = dict()
+                            if not expire_data in tickers:
+                                tickers[expire_data] = dict()
+                            if not strike in tickers[expire_data]:
+                                tickers[expire_data][strike] = dict()
+                            if not side in tickers[expire_data][strike]:
+                                tickers[expire_data][strike][side] = dict()
+                            tickers[expire_data][strike][side] = refine_info
+                        self.tickers = tickers
         except Exception as ex:
             logger.error(f'Exception in Orderbook {ex}')
         return {self.exchanger: self.tickers, self.target: self.target}
