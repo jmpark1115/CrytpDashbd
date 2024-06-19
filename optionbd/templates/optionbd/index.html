@@ -369,6 +369,7 @@
                                             <th data-orderable="false">Qty</th>
                                             <th>Eff.(%)</th>
                                             <th>Remain</th>
+                                            <th>hidden_qty_detail</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -387,6 +388,7 @@
                                             <th>Qty</th>
                                             <th>Eff.(%)</th>
                                             <th>Remain</th>
+                                            <th>hidden_qty_detail</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -421,6 +423,12 @@
 
 // Datatable 최기 세팅
 const table = $('#tickers-table').DataTable({
+    "columnDefs": [
+      {
+        "targets": -1,
+        "visible": false
+      }
+    ],
     paging: false, // 페이징 사용 안함.
     responsive: true,
     orderMulti: true,
@@ -463,18 +471,17 @@ const table = $('#tickers-table').DataTable({
             $(row).find('td').css(style_highlight);
         }
 
-        const qty_array = data[11].split(":").map(Number);
-
+        const qty_array = data[14].split(":").map(Number);
         if (qty_array[0] === qty_array[1]) {
             $(row).find('td:nth-child(12)').text(qty_array[0])
             $(row).find('td:nth-child(12)').css(style_text_red);
+            console.log($(row).child);
         } else if (qty_array[0] === qty_array[2]){
             $(row).find('td:nth-child(12)').text(qty_array[0])
             $(row).find('td:nth-child(12)').css(style_text_green);
         } else {
             console.log("첫 번째 값과 같은 값이 없습니다.");
         }
-
 
         $(row).find('td:nth-child(1)').addClass("dt-control");
         $(row).find('td:nth-child(1), td:nth-child(2), td:nth-child(3), td:nth-child(5)').css(style_text_center);

@@ -139,9 +139,10 @@ function updateTable(optionData) {
                             ticker.otm,
                             ticker.total_cost,
                             ticker.edge,
-                            qty_detail,
+                            ticker.qty,
                             ticker.effectiveness,
                             ticker.remainDate,
+                            qty_detail,
                         ]);
 
                     }
