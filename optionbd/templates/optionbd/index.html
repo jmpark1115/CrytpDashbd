@@ -475,7 +475,6 @@ const table = $('#tickers-table').DataTable({
         if (qty_array[0] === qty_array[1]) {
             $(row).find('td:nth-child(12)').text(qty_array[0])
             $(row).find('td:nth-child(12)').css(style_text_red);
-            console.log($(row).child);
         } else if (qty_array[0] === qty_array[2]){
             $(row).find('td:nth-child(12)').text(qty_array[0])
             $(row).find('td:nth-child(12)').css(style_text_green);
