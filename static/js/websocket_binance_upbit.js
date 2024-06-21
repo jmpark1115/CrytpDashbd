@@ -70,8 +70,8 @@
 			//console.log("Open price : " + binance_ticker['data']['o']);
 			//console.log("last price : " + binance_ticker['data']['c']);
 			symbol = binance_ticker['data']['s'];
-			open_price = binance_ticker['data']['c'];
-			set_price_result(EX_BINANCE, EX_BINANC_MAP[symbol], open_price);
+			last_price = binance_ticker['data']['c'];
+			set_price_result(EX_BINANCE, EX_BINANC_MAP[symbol], last_price);
 
 		}
 		catch(e){
