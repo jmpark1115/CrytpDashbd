@@ -68,8 +68,9 @@
 			//console.log("stream : " + binance_ticker['stream']);
 			//console.log("Symbol : " + binance_ticker['data']['s']);
 			//console.log("Open price : " + binance_ticker['data']['o']);
+			//console.log("last price : " + binance_ticker['data']['c']);
 			symbol = binance_ticker['data']['s'];
-			open_price = binance_ticker['data']['o'];
+			open_price = binance_ticker['data']['c'];
 			set_price_result(EX_BINANCE, EX_BINANC_MAP[symbol], open_price);
 
 		}
@@ -90,8 +91,8 @@
 			let type = upbit_ticker['type'];
 			if('ticker' == type) {
 				code = upbit_ticker['code'];
-				open_price = upbit_ticker['opening_price'];
-				set_price_result(EX_UPBIT, EX_UPBIT_MAP[code], open_price);
+				trade_price = upbit_ticker['trade_price'];
+				set_price_result(EX_UPBIT, EX_UPBIT_MAP[code], trade_price);
 			}
 
 		}

@@ -1,5 +1,6 @@
-// const _websocket_adress = 'ws://localhost:8443';
+//const _websocket_adress = 'ws://localhost:8443';
 const _websocket_adress = 'ws://13.209.152.192:8443';
+// const _websocket_adress = 'wss://crytopang.trade:8443';
 var _websocket;
 var selectedExchange = [];
 var selectedCoin = [];
