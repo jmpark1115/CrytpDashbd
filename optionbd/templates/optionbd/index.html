@@ -334,7 +334,7 @@
                                             <input type="range" class="form-range" min="0" max="100" step="1" id="profit-threshold" value="0" style="background: linear-gradient(to right, white 0%, white 100%);">
                                             <div class="tooltip-container" id="profit-threshold-tooltip">
                                                 <span class="tooltip-text" id="profit-threshold-span" ></span>
-                                                <input type="number" id="profit-threshold-span-number" style="display: none; width: 60px; text-align: right;">
+                                                <input type="number" min="0" max="100" id="profit-threshold-span-number" style="display: none; width: 60px; text-align: right;">
                                                 <span class="tooltip-text" id="profit-threshold-span-tail" style="display: none;">$</span>
                                             </div>
                                         </div>
@@ -345,7 +345,7 @@
                                             <input type="range" class="form-range" min="0" max="365" step="1" id="days-until-expiry" value="365" style="background: linear-gradient(to right, white 0%, white 100%);">
                                             <div class="tooltip-container" id="days-until-expiry-tooltip">
                                                 <span class="tooltip-text" id="days-until-expiry-span"></span>
-                                                <input type="number" id="days-until-expiry-span-number" style="display: none; width: 60px; text-align: right;">
+                                                <input type="number" min="0" max="365" id="days-until-expiry-span-number" style="display: none; width: 60px; text-align: right;">
                                                 <span class="tooltip-text" id="days-until-expiry-span-tail" style="display: none;">days</span>
                                             </div>
                                         </div>
@@ -605,12 +605,34 @@ daysUntilExpiryRange.addEventListener('input', () => {
 
 // profitThresholdSpanNumber event handler
 profitThresholdSpanNumber.addEventListener('input', () => {
+    if (profitThresholdSpanNumber.value.trim() === "") {
+      profitThresholdSpanNumber.value = 0;
+    }else{
+        profitThresholdSpanNumber.value = parseInt(profitThresholdSpanNumber.value.trim(), 10);
+        if (profitThresholdSpanNumber.value < 0) {
+            profitThresholdSpanNumber.value = 0;
+        }
+        if (profitThresholdSpanNumber.value > 100) {
+            profitThresholdSpanNumber.value = 100;
+        }
+    }
     profitThresholdRange.value = profitThresholdSpanNumber.value;
     profitThresholdSpan.textContent = profitThresholdRange.value;
 });
 
 // daysUntilExpirySpanNumber event handler
 daysUntilExpirySpanNumber.addEventListener('input', () => {
+    if (daysUntilExpirySpanNumber.value.trim() === "") {
+        daysUntilExpirySpanNumber.value = 365;
+    }else{
+        daysUntilExpirySpanNumber.value = parseInt(daysUntilExpirySpanNumber.value.trim(), 10);
+        if (daysUntilExpirySpanNumber.value < 0) {
+            daysUntilExpirySpanNumber.value = 0;
+        }
+        if (daysUntilExpirySpanNumber.value > 365) {
+            daysUntilExpirySpanNumber.value = 365;
+        }
+    }
     daysUntilExpiryRange.value = daysUntilExpirySpanNumber.value;
     daysUntilExpirySpan.textContent = daysUntilExpiryRange.value;
 });
