@@ -330,10 +330,11 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="profit-threshold" class="form-label">Profit threshold</label>
+                                            <label for="profit-threshold" class="form-label">Profit threshold ($)</label>
                                             <input type="range" class="form-range" min="0" max="100" step="1" id="profit-threshold" value="0" style="background: linear-gradient(to right, white 0%, white 100%);">
                                             <div class="tooltip-container" id="profit-threshold-tooltip">
                                                 <span class="tooltip-text" id="profit-threshold-span" ></span>
+                                                <input type="number" id="profit-threshold-span-number" style="display: none; width: 60px; text-align: right;">
                                                 <span class="tooltip-text" id="profit-threshold-span-tail" style="display: none;">$</span>
                                             </div>
                                         </div>
@@ -344,6 +345,7 @@
                                             <input type="range" class="form-range" min="0" max="365" step="1" id="days-until-expiry" value="365" style="background: linear-gradient(to right, white 0%, white 100%);">
                                             <div class="tooltip-container" id="days-until-expiry-tooltip">
                                                 <span class="tooltip-text" id="days-until-expiry-span"></span>
+                                                <input type="number" id="days-until-expiry-span-number" style="display: none; width: 60px; text-align: right;">
                                                 <span class="tooltip-text" id="days-until-expiry-span-tail" style="display: none;">days</span>
                                             </div>
                                         </div>
@@ -573,24 +575,44 @@ $('#stop-button').on('click', function() {
 const profitThresholdRange = document.getElementById('profit-threshold');
 const profitThresholdTooltip = document.getElementById('profit-threshold-tooltip');
 const profitThresholdSpan = document.getElementById('profit-threshold-span');
+const profitThresholdSpanNumber = document.getElementById('profit-threshold-span-number');
 const profitThresholdSpanTail = document.getElementById('profit-threshold-span-tail');
 const daysUntilExpiryRange = document.getElementById('days-until-expiry');
 const daysUntilExpiryTooltip = document.getElementById('days-until-expiry-tooltip');
 const daysUntilExpirySpan = document.getElementById('days-until-expiry-span');
+const daysUntilExpirySpanNumber = document.getElementById('days-until-expiry-span-number');
 const daysUntilExpirySpanTail = document.getElementById('days-until-expiry-span-tail');
 
 // profitThresholdRange event handler
 profitThresholdRange.addEventListener('input', () => {
     profitThresholdSpan.textContent = profitThresholdRange.value;
+    profitThresholdSpan.style.display = 'none';
     profitThresholdSpanTail.style.display = 'inline';
+    profitThresholdSpanNumber.value = profitThresholdRange.value;
+    profitThresholdSpanNumber.style.display = 'inline';
     updateTooltipPosition(profitThresholdRange, profitThresholdTooltip);
 });
 
 // daysUntilExpiryRang event handler
 daysUntilExpiryRange.addEventListener('input', () => {
     daysUntilExpirySpan.textContent = daysUntilExpiryRange.value;
+    daysUntilExpirySpan.style.display = 'none';
     daysUntilExpirySpanTail.style.display = 'inline';
+    daysUntilExpirySpanNumber.value = daysUntilExpiryRange.value;
+    daysUntilExpirySpanNumber.style.display = 'inline';
     updateTooltipPosition(daysUntilExpiryRange, daysUntilExpiryTooltip);
+});
+
+// profitThresholdSpanNumber event handler
+profitThresholdSpanNumber.addEventListener('input', () => {
+    profitThresholdRange.value = profitThresholdSpanNumber.value;
+    profitThresholdSpan.textContent = profitThresholdRange.value;
+});
+
+// daysUntilExpirySpanNumber event handler
+daysUntilExpirySpanNumber.addEventListener('input', () => {
+    daysUntilExpiryRange.value = daysUntilExpirySpanNumber.value;
+    daysUntilExpirySpan.textContent = daysUntilExpiryRange.value;
 });
 
 function updateTooltipPosition(range, tooltip) {
