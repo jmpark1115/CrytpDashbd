@@ -143,7 +143,9 @@ class Bnws:
                     timd_diff = current_time_ms - self.previous_req_time
                     # logger.debug(f'timd_diff : {timd_diff}')
                     if timd_diff > self.req_interval:
-                        logger.debug(f'previous_req_time is updated: {current_time_ms}')
+                        logger.debug(f'timd_diff : {timd_diff}')
+                        logger.debug(f'current_time_ms : {current_time_ms}')
+                        logger.debug(f'previous_req_time : {self.previous_req_time}')
                         self.previous_req_time = current_time_ms
                         self.get_symbols(self.target)
                         self.get_index_price(self.target)
