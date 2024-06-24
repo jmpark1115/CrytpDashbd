@@ -623,7 +623,7 @@ profitThresholdSpanNumber.addEventListener('input', () => {
 // daysUntilExpirySpanNumber event handler
 daysUntilExpirySpanNumber.addEventListener('input', () => {
     if (daysUntilExpirySpanNumber.value.trim() === "") {
-        daysUntilExpirySpanNumber.value = 365;
+        daysUntilExpirySpanNumber.value = 0;
     }else{
         daysUntilExpirySpanNumber.value = parseInt(daysUntilExpirySpanNumber.value.trim(), 10);
         if (daysUntilExpirySpanNumber.value < 0) {
