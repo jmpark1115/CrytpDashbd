@@ -86,7 +86,6 @@ class Handler(object):
             else:
                 logger.debug(f'Unsupported exchanger_{b.id}_{b.exchanger}')
         for m in self.markets: # 거래소 api
-            m.get_config()
             logger.debug(f'{m.id}_{m.nickname}_ArbiBot')
         return
 
