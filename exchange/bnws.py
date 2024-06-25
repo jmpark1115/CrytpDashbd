@@ -128,70 +128,74 @@ class Bnws:
         self.get_index_price(self.target)
         self.previous_req_time = int(round(time.time() * 1000))
 
-        async with websockets.connect(self.wss_uri) as websocket:
-            logger.debug(f'Start websocket.send for  : {self.target}')
-            await websocket.send(json.dumps({"method": "SUBSCRIBE", "params": self.symbols, "id": 1}))
-
-            # ping/pong 처리를 위한 task 생성
-            # ping_pong_task = asyncio.create_task(self.handle_ping_pong(websocket))
-            ping_pong_task = asyncio.Task(self.handle_ping_pong(websocket))
+        while True:
 
             try:
-                async for message in websocket:
+                async with websockets.connect(self.wss_uri) as websocket:
+                    logger.debug(f'Start websocket.send for  : {self.target}')
+                    await websocket.send(json.dumps({"method": "SUBSCRIBE", "params": self.symbols, "id": 1}))
 
-                    current_time_ms = int(round(time.time() * 1000))
-                    timd_diff = current_time_ms - self.previous_req_time
-                    # logger.debug(f'timd_diff : {timd_diff}')
-                    if timd_diff > self.req_interval:
-                        logger.debug(f'timd_diff : {timd_diff}')
-                        logger.debug(f'current_time_ms : {current_time_ms}')
-                        logger.debug(f'previous_req_time : {self.previous_req_time}')
-                        self.previous_req_time = current_time_ms
-                        self.get_symbols(self.target)
-                        self.get_index_price(self.target)
-                        self.tickers = dict()
-                        logger.debug(f'Restart websocket.send for  : {self.target}')
-                        await websocket.send(json.dumps({"method": "SUBSCRIBE", "params": self.symbols, "id": 1}))
+                    # ping/pong 처리를 위한 task 생성
+                    # ping_pong_task = asyncio.create_task(self.handle_ping_pong(websocket))
+                    ping_pong_task = asyncio.Task(self.handle_ping_pong(websocket))
 
-                    self.loop_number = self.loop_number + 1
-                    res = json.loads(message)
-                    # print(f"Received data for {self.loop_number} : {res}")
-                    if isinstance(res, dict):
-                        # res 데이터 파싱
-                        if 'data' in res and res['data']:
-                            for data in res['data']:
-                                ticker = data['s'].split('-')
-                                coin = ticker[0]
-                                expire_data = ticker[1]
-                                strike = ticker[2]
-                                side = ticker[3]
-                                # print(f"Received data for : {coin}-{expire_data}-{strike}-{side}")
-                                if ticker[0] == self.target:
-                                    refine_info = dict()
-                                    refine_info['askPrice'] = float(D(data['ao'])) if data['ao'] else 0
-                                    refine_info['askQty'] = float(D(data['aq'])) if data['aq'] else 0
-                                    refine_info['bidPrice'] = float(D(data['bo'])) if data['bo'] else 0
-                                    refine_info['bidQty'] = float(D(data['bq'])) if data['bq'] else 0
-                                    refine_info['indexPrice'] = float(D(self.index_price_map[self.target]))
-                                    refine_info['tr_fee_rate'] = self.tr_fee_rate
-                                    refine_info['ex_fee_rate'] = self.ex_fee_rate
-                                    refine_info['max_im_factor'] = self.max_im_factor
-                                    refine_info['timestamp'] = int(data['T']) if data['T'] else 0
+                    async for message in websocket:
 
-                                    if not expire_data in self.tickers:
-                                        self.tickers[expire_data] = dict()
-                                    if not strike in self.tickers[expire_data]:
-                                        self.tickers[expire_data][strike] = dict()
-                                    if not side in self.tickers[expire_data][strike]:
-                                        self.tickers[expire_data][strike][side] = dict()
-                                    self.tickers[expire_data][strike][side] = refine_info
+                        current_time_ms = int(round(time.time() * 1000))
+                        timd_diff = current_time_ms - self.previous_req_time
+                        # logger.debug(f'timd_diff : {timd_diff}')
+                        if timd_diff > self.req_interval:
+                            logger.debug(f'timd_diff : {timd_diff}')
+                            logger.debug(f'current_time_ms : {current_time_ms}')
+                            logger.debug(f'previous_req_time : {self.previous_req_time}')
+                            self.previous_req_time = current_time_ms
+                            self.get_symbols(self.target)
+                            self.get_index_price(self.target)
+                            self.tickers = dict()
+                            logger.debug(f'Restart websocket.send for  : {self.target}')
+                            # print(f'Restart websocket.send for  : {self.target}')
+                            await websocket.send(json.dumps({"method": "SUBSCRIBE", "params": self.symbols, "id": 1}))
 
+                        self.loop_number = self.loop_number + 1
+                        res = json.loads(message)
+                        # print(f"Received data for {self.loop_number} : {res}")
+                        if isinstance(res, dict):
+                            # res 데이터 파싱
+                            if 'data' in res and res['data']:
+                                for data in res['data']:
+                                    ticker = data['s'].split('-')
+                                    coin = ticker[0]
+                                    expire_data = ticker[1]
+                                    strike = ticker[2]
+                                    side = ticker[3]
+                                    # print(f"Received data for : {coin}-{expire_data}-{strike}-{side}")
+                                    if ticker[0] == self.target:
+                                        refine_info = dict()
+                                        refine_info['askPrice'] = float(D(data['ao'])) if data['ao'] else 0
+                                        refine_info['askQty'] = float(D(data['aq'])) if data['aq'] else 0
+                                        refine_info['bidPrice'] = float(D(data['bo'])) if data['bo'] else 0
+                                        refine_info['bidQty'] = float(D(data['bq'])) if data['bq'] else 0
+                                        refine_info['indexPrice'] = float(D(self.index_price_map[self.target]))
+                                        refine_info['tr_fee_rate'] = self.tr_fee_rate
+                                        refine_info['ex_fee_rate'] = self.ex_fee_rate
+                                        refine_info['max_im_factor'] = self.max_im_factor
+                                        refine_info['timestamp'] = int(data['T']) if data['T'] else 0
 
-                    keys = self.tickers.keys()
-                    # print(f"tickers.keys : {keys}")
+                                        if not expire_data in self.tickers:
+                                            self.tickers[expire_data] = dict()
+                                        if not strike in self.tickers[expire_data]:
+                                            self.tickers[expire_data][strike] = dict()
+                                        if not side in self.tickers[expire_data][strike]:
+                                            self.tickers[expire_data][strike][side] = dict()
+                                        self.tickers[expire_data][strike][side] = refine_info
+
+                        keys = self.tickers.keys()
+                        # print(f"tickers.keys : {keys}")
 
             except websockets.exceptions.ConnectionClosed:
                 logger.error(f'Connection closed in connect_and_listen : {self.target}')
+                # print(f'Connection closed in connect_and_listen : {self.target}')
+                await asyncio.sleep(1)
             finally:
                 # ping/pong task 취소
                 ping_pong_task.cancel()
