@@ -165,15 +165,13 @@ class Handler(object):
                     # 비교할 exs_strike, exb_strike 의 key 값 검증
                     exs_strike_keys = list(exs_strike.keys())
                     exb_strike_keys = list(exb_strike.keys())
-                    if exs_strike_keys != ['C', 'P'] and exs_strike_keys != ['P', 'C']:
-                        logger.error(f"Invalid exs_strike_keys : {exs_strike_keys}")
-                        continue
-                    if exb_strike_keys != ['C', 'P'] and exb_strike_keys != ['P', 'C']:
-                        logger.error(f"Invalid exb_strike_keys : {exb_strike_keys}")
-                        continue
 
                     # 비교할 exs_strike, exb_strike 의 key 값 검증 후 Call, Put 옵션 값을 각각 비교
                     for optionType in ['C', 'P']:
+
+                        # exs_strike_keys, exb_strike_keys 양쪽에 optionType 이 모두 존재하지 않으면 제외
+                        if optionType not in exs_strike_keys or optionType not in exb_strike_keys:
+                            continue
 
                         # bidPrice, askPrice 가 o인 경우 제외
                         if exs_strike[optionType]['bidPrice'] == 0:
