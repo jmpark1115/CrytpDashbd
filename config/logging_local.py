@@ -58,7 +58,13 @@ LOGGING = {
     # 로거를 이름별로 정의
     'loggers': {
         'optionbd': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },'exchange': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },'django.db.backends': {
+            'handlers': ['console'],
             'level': 'DEBUG',
         },
     },
