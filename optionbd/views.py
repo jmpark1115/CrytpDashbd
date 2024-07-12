@@ -367,10 +367,7 @@ class Handler(object):
 
 class Maker(object):
     def __init__(self):
-        # self.markets_b = ['bybit', 'binance', 'okx', 'deribit'];
-        # self.markets_s = ['okx', 'deribit']
-        # self.markets   = self.markets_b + self.markets_s
-        # self.symbols   = ['btc', 'eth']
+        logger.debug(f'======== START ========= ')
         self.hds = dict() # { 'bybit-okx': hd of bybit-okx, ... }
         self.hd  = None # 특정 handler ex) bybit-okx, okx-okx
         self.hdid = None # 개별 hd id
@@ -415,9 +412,8 @@ class Maker(object):
         return HttpResponse(json.dumps(context))
 
     def index(self, request):
-        print('index.html called')
+        logger.debug('index.html called')
         url = reverse('optionbd:index')
-        print(url)
         return render(request, 'optionbd/index.html')
 
     def run(self):
@@ -427,4 +423,5 @@ class Maker(object):
         return
 
 maker = Maker()
-maker.run()
+if not db_migrate:
+    maker.run()
