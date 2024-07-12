@@ -15,7 +15,7 @@ config.read(filename)
 sysname  = config.get('default', 'sysname')
 if not sysname:
     raise ValueError
-use_db = config.get(sysname, 'use_db', fallback=False)
+use_db = config.get(sysname, 'use_db', fallback=None)
 dbname = config.get(sysname, 'dbname')
 dbhost = config.get(sysname, 'dbhost')
 user = config.get(sysname, 'user')

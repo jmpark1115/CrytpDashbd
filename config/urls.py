@@ -17,9 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('', include(('optionbd.urls', 'optionbd'), namespace='optionbd')),
-    # path('nicebd/', include(('nicebd.urls', 'nicebd'), namespace='nicebd')),
+    path('', include(('optionbd.urls', 'optionbd'), namespace='optionbd_home')),
     path('optionbd/', include(('optionbd.urls', 'optionbd'), namespace='optionbd')),
-    # path('optionbd/', include('optionbd.urls')),
     path('admin/', admin.site.urls),
 ]
