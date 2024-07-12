@@ -19,5 +19,5 @@ from django.urls import path, include
 urlpatterns = [
     path('', include(('optionbd.urls', 'optionbd'), namespace='optionbd_home')),
     path('optionbd/', include(('optionbd.urls', 'optionbd'), namespace='optionbd')),
-    path('admin/', admin.site.urls),
+    path('admin1749.cryptopang/', admin.site.urls),
 ]
