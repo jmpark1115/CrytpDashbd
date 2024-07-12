@@ -75,37 +75,24 @@ class Bn(object):
             self.t1.deamon = True
             self.t1.start()
         return
-
     def http_request(self, method, path, params=None, headers=None, auth=None):
         url = API_URL + path
+        response = False
         try:
             if method == "GET":
                 response = requests.get(url, params=params, headers=headers, timeout=self.GET_TIME_OUT)
-                if response.status_code == 200:
-                    response = response.json()
-                    return response
-                elif response.status_code == 400: # {"code":-2013, "msg":"Order does not exist"}
-                    response = response.json()
-                    return response
-                else:
-                    logger.error('http_request_{}_{}_{}_{}'.format(method, url, params, response.text))
-            if method == "POST":
+            elif method == "POST":
                 response = requests.post(url, params=params, headers=headers, timeout=self.POST_TIME_OUT)
-                if response.status_code == 200:
-                    response = response.json()
-                    return response
-                else:
-                    logger.error('http_request_{}_{}_{}_{}'.format(method, url, params, response.text))
-            if method == 'DELETE':
+            elif method == "DELETE":
                 response = requests.delete(url, params=params, headers=headers, timeout=self.POST_TIME_OUT)
-                if response.status_code == 200:
-                    response = response.json()
-                    return response
-                else:
-                    logger.error('http_request_{}_{}_{}_{}'.format(method, url, params, response.text))
-        except Exception as e:
-            logger.error('http_request_{}_{}_{}'.format(url, params, e))
-
+            try:
+                response = response.json()
+            except Exception as ex:
+                logger.debug(f'http_request_{method}_{url}_{params}_{response.text}')
+            else:
+                return response
+        except Exception as ex:
+            logger.error(f'http_request_{url}_{method}_{params}_{ex}')
         return False
 
     def get_index_price(self):
