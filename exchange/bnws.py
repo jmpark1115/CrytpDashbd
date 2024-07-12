@@ -1,7 +1,7 @@
 import asyncio
 import websockets
 import json, time
-
+import ssl
 import requests
 from datetime import datetime, timedelta
 from decimal import Decimal as D
@@ -34,43 +34,23 @@ class Bnws:
 
     def http_request(self, method, path, params=None, headers=None, auth=None):
         url = self.api_url + path
+        response = False
         try:
             if method == "GET":
                 response = requests.get(url, params=params, headers=headers, timeout=self.GET_TIME_OUT)
-                if response.status_code == 200:
-                    response = response.json()
-                    return response
-                elif response.status_code == 400:  # {"code":-2013, "msg":"Order does not exist"}
-                    response = response.json()
-                    return response
-                else:
-                    logger.error(
-                        'http_request_{}_{}_{}_{}'.format(method, url, params, response.text)
-                    )
-            if method == "POST":
-                response = requests.post(
-                    url, params=params, headers=headers, timeout=self.POST_TIME_OUT
-                )
-                if response.status_code == 200:
-                    response = response.json()
-                    return response
-                else:
-                    logger.error(
-                        'http_request_{}_{}_{}_{}'.format(method, url, params, response.text)
-                    )
-            if method == 'DELETE':
-                response = requests.delete(
-                    url, params=params, headers=headers, timeout=self.POST_TIME_OUT
-                )
-                if response.status_code == 200:
-                    response = response.json()
-                    return response
-                else:
-                    logger.error(
-                        'http_request_{}_{}_{}_{}'.format(method, url, params, response.text)
-                    )
-        except Exception as e:
-            logger.error('http_request_{}_{}_{}'.format(url, params, e))
+            elif method == "POST":
+                response = requests.post(url, params=params, headers=headers, timeout=self.POST_TIME_OUT)
+            elif method == "DELETE":
+                response = requests.delete(url, params=params, headers=headers, timeout=self.POST_TIME_OUT)
+            try:
+                response = response.json()
+            except Exception as ex:
+                logger.debug(f'http_request_{method}_{url}_{params}_{response.text}')
+            else:
+                return response
+        except Exception as ex:
+            logger.error(f'http_request_{url}_{method}_{params}_{ex}')
+        return False
 
     def get_index_price(self, coin):
         '''
@@ -128,10 +108,13 @@ class Bnws:
         self.get_index_price(self.target)
         self.previous_req_time = int(round(time.time() * 1000))
 
+        ssl_context = ssl.create_default_context()
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
         while True:
 
             try:
-                async with websockets.connect(self.wss_uri) as websocket:
+                async with websockets.connect(self.wss_uri, ssl=ssl_context) as websocket:
                     logger.debug(f'Start websocket.send for  : {self.target}')
                     await websocket.send(json.dumps({"method": "SUBSCRIBE", "params": self.symbols, "id": 1}))
 
