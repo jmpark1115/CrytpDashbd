@@ -8,8 +8,10 @@
 <script src="{% static 'js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'js/dataTables.buttons.min.js' %}"></script>
 <script src="{% static 'js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'js/websocket_binance_upbit.js' %}"></script>
+<script src="{% static 'js/websocket_binance_index.js' %}"></script>
+<script src="{% static 'js/websocket_binance_ticker.js' %}"></script>
 <script src="{% static 'js/websocket_optionbd.js' %}"></script>
+<script src="{% static 'js/jquery.marquee.js' %}"></script>
 
 {% endblock script %}
 
@@ -23,7 +25,9 @@
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="{% url 'optionbd:index' %}">Option Premium Board</a>
+            <a class="navbar-brand ps-3" href="{% url 'optionbd:index' %}">
+                <img src="{% static 'img/cryptopang_logo.png' %}" alt="cryptopang_logo">
+            </a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
@@ -128,73 +132,175 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Dashboard</h1>
+
+                        <!-- coins-marquee BEGIN -->
+                        <div class="row">
+                            <div class="border-0">
+								<div class="coins-marquee">
+                                    <ul class="nav">
+                                        <li>
+                                            <img src="{% static 'img/coin/bitcoin.png' %}" alt="bitcoin">
+                                            <span class="name">Bitcoin <small>btc</small></span>
+                                            <span class="price binance_ticker_btc_price" id="binance_ticker_btc_price"></span>
+                                            <span class="change binance_ticker_btc_change" id="binance_ticker_btc_change"></span>
+                                        </li>
+                                        <li>
+                                            <img src="{% static 'img/coin/ethereum.png' %}" alt="ethereum">
+                                            <span class="name">Ethereum <small>eth</small></span>
+                                            <span class="price binance_ticker_eth_price" id="binance_ticker_eth_price"></span>
+                                            <span class="change binance_ticker_eth_change" id="binance_ticker_eth_change"></span>
+                                        </li>
+                                        <li>
+                                            <img src="{% static 'img/coin/bnb-icon2_2x.png' %}" alt="binancecoin">
+                                            <span class="name">BNB <small>bnb</small></span>
+                                            <span class="price binance_ticker_bnb_price" id="binance_ticker_bnb_price"></span>
+                                            <span class="change binance_ticker_bnb_change" id="binance_ticker_bnb_change"></span>
+                                        </li>
+                                        <li>
+                                            <img src="{% static 'img/coin/solana.png' %}" alt="solana">
+                                            <span class="name">Solana <small>sol</small></span>
+                                            <span class="price binance_ticker_sol_price" id="binance_ticker_sol_price"></span>
+                                            <span class="change binance_ticker_sol_change" id="binance_ticker_sol_change"></span>
+                                        </li>
+                                        <li>
+                                            <img src="{% static 'img/coin/ethereum-classic.png' %}" alt="ethereum-classic">
+                                            <span class="name">Ethereum Classic <small>etc</small></span>
+                                            <span class="price binance_ticker_etc_price" id="binance_ticker_etc_price"></span>
+                                            <span class="change binance_ticker_etc_change" id="binance_ticker_etc_change"></span>
+                                        </li>
+                                        <li>
+                                            <img src="{% static 'img/coin/xrp-symbol-white-128.png' %}" alt="ripple">
+                                            <span class="name">XRP <small>xrp</small></span>
+                                            <span class="price binance_ticker_xrp_price" id="binance_ticker_xrp_price"></span>
+                                            <span class="change binance_ticker_xrp_change" id="binance_ticker_xrp_change"></span>
+                                        </li>
+                                        <li>
+                                            <img src="{% static 'img/coin/dogecoin.png' %}" alt="dogecoin">
+                                            <span class="name">Dogecoin <small>doge</small></span>
+                                            <span class="price binance_ticker_doge_price" id="binance_ticker_doge_price"></span>
+                                            <span class="change binance_ticker_doge_change" id="binance_ticker_doge_change"></span>
+                                        </li>
+                                        <li>
+                                            <img src="{% static 'img/coin/bitcoin-cash-circle.png' %}" alt="bitcoin-cash">
+                                            <span class="name">Bitcoin Cash <small>bch</small></span>
+                                            <span class="price binance_ticker_bch_price" id="binance_ticker_bch_price"></span>
+                                            <span class="change binance_ticker_bch_change" id="binance_ticker_bch_change"></span>
+                                        </li>
+                                    </ul>
+								</div>
+                            </div>
+                        </div>
+                        <!-- coins-marquee END -->
+
+                        <h1 class="mt-4">
+                            <span class="referral-code">Dashboard</span>
+                        </h1>
 
                         <div class="row">
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">BTC</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-<!--                                        <a class="small text-white stretched-link" href="#">View Details</a>-->
-                                        <div class="small text-white">$ <span id="binance_btc_price"></span> USDT / W <span id="upbit_btc_price"></span> WON</div>
+                                        <div class="small text-white">BTC INDEX : $ <span id="binance_index_btc_price"></span></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-warning text-white mb-4">
-                                    <div class="card-body">ETH</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-<!--                                        <a class="small text-white stretched-link" href="#">View Details</a>-->
-                                        <div class="small text-white">$ <span id="binance_eth_price"></span> USDT / W <span id="upbit_eth_price"></span> WON</div>
+                                        <div class="small text-white">ETH INDEX : $ <span id="binance_index_eth_price"></span></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-success text-white mb-4">
-                                    <div class="card-body">SOL</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-<!--                                        <a class="small text-white stretched-link" href="#">View Details</a>-->
-                                        <div class="small text-white">$ <span id="binance_sol_price"></span> USDT / W <span id="upbit_sol_price"></span> WON</div>
+                                        <div class="small text-white">SOL INDEX : $ <span id="binance_index_sol_price"></span></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-danger text-white mb-4">
-                                    <div class="card-body">USDT</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-<!--                                        <a class="small text-white stretched-link" href="#">View Details</a>-->
-                                        <div class="small text-white">$ <span id="binance_usdt_price"></span> 1 USDT / W <span id="upbit_usdt_price"></span> WON</div>
+                                        <div class="small text-white">XRP INDEX : $ <span id="binance_index_xrp_price"></span></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+
                         <div class="row">
                             <div class="col-xl-6">
                                 <div class="card mb-4">
                                     <div class="card-header">
-                                        <i class="fas fa-chart-area me-1"></i>
-                                        Area Chart Example
+                                        <i class="fas fa-chart-bar me-1"></i>
+                                        BTC Volatility
                                     </div>
-                                    <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
+                                    <div class="card-body">
+
+                                        <!-- TradingView Widget BEGIN -->
+                                        <div class="tradingview-widget-container" style="height:100%;width:100%">
+                                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                                            {
+                                                "autosize": true,
+                                                "height": 250,
+                                                "symbol": "DERIBIT:DVOL",
+                                                "interval": "D",
+                                                "timezone": "Etc/UTC",
+                                                "theme": "light",
+                                                "style": "1",
+                                                "locale": "en",
+                                                "toolbar_bg": "#f1f3f6",
+                                                "hide_volume": true,
+                                                "allow_symbol_change": false
+                                            }
+                                            </script>
+                                          </div>
+
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-xl-6">
                                 <div class="card mb-4">
                                     <div class="card-header">
                                         <i class="fas fa-chart-bar me-1"></i>
-                                        Bar Chart Example
+                                        ETH Volatility
                                     </div>
-                                    <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
+                                    <div class="card-body">
+
+
+                                        <!-- TradingView Widget BEGIN -->
+                                        <div class="tradingview-widget-container" style="height:100%;width:100%">
+                                            <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
+                                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                                            {
+                                                "autosize": true,
+                                                "height": 250,
+                                                "symbol": "DERIBIT:ETHDVOL",
+                                                "interval": "D",
+                                                "timezone": "Etc/UTC",
+                                                "theme": "light",
+                                                "style": "1",
+                                                "locale": "en",
+                                                "toolbar_bg": "#f1f3f6",
+                                                "allow_symbol_change": false
+                                             }
+                                            </script>
+                                          </div>
+                                          <!-- TradingView Widget END -->
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
                                 Option Information
                             </div>
                             <div class="card-body">
-                                <label for="exchange-select">Exchanges (BN: Binance. DRB: Deribit, OKX: Okx, BB: Bybit) :</label>
+                                <label for="exchange-checkboxes">Exchanges (BN: Binance. DRB: Deribit, OKX: Okx, BB: Bybit) :</label>
                                 <div id="exchange-checkboxes">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input exchange-checkbox" type="checkbox" value="ALL" id="exchange-all" checked>
@@ -275,7 +381,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <label for="coin-select">Symbols:</label>
+                                <label for="coin-checkboxes">Symbols:</label>
                                 <div id="coin-checkboxes">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input coin-checkbox" type="checkbox" value="ALL" id="coin-all" checked>
@@ -296,7 +402,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <label for="expiration-date-select">ExpireDates:</label>
+                                <label for="expiration-date-checkboxes">ExpireDates:</label>
                                 <div id="expiration-date-checkboxes">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input expiration-checkbox" type="checkbox" value="ALL" id="expire-all" checked>
@@ -305,7 +411,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <label for="coin-select">Options:</label>
+                                <label for="option-checkboxes">Options:</label>
                                 <div id="option-checkboxes">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input option-checkbox" type="checkbox" value="ALL" id="option-all" checked>
@@ -651,14 +757,49 @@ function updateTooltipPosition(range, tooltip) {
     tooltip.style.top = rangeRect.top - tooltip.offsetHeight - 10 + 'px'; // Adjust top position as needed
 }
 
+//referral-code & copy-button event handler
+const referralCodes = document.querySelectorAll('span.referral-code');
+referralCodes.forEach(referralCode => {
+    const copyButton = document.createElement('span');
+    copyButton.classList.add('copy-button');
+    copyButton.textContent = 'Copy';
+    referralCode.appendChild(copyButton);
+    copyButton.addEventListener('click', (event) => {
+        navigator.clipboard.writeText(referralCode.childNodes[0].textContent.trim())
+            .then(() => {
+                copyButton.textContent = 'Copied';
+                setTimeout(() => {
+                    copyButton.textContent = 'Copy';
+                }, 1500);
+            })
+            .catch(err => {
+                console.error('referralCode Copy Failure: ', err);
+            });
+    });
+});
+
+//coins-marquee handler
+$('.coins-marquee').marquee({
+    duration: 3e4, // 속도
+    gap: 1, // 간격
+    delayBeforeStart: 500, // 시작 delay값
+    direction: 'left', // 방향
+    duplicated: true, // 선택 영역 복제
+    pauseOnHover: true, // hover시 일시중지 여부
+    startVisible: true,
+});
+
+
 $(function() {
 
     // Option table 관련 웹소켓 접속 및 데이터 갱신 시작
     doOpenOption();
 
-    // 실시간 Price 관련 웹소켓 접속 및 데이터 갱신 시작
-    doOpenBinance();
-    doOpenUpbit();
+    // 실시간 Index Price 관련 웹소켓 접속 및 데이터 갱신 시작
+    doOpenBinanceIndex();
+
+    // 실시간 Ticker Price 관련 웹소켓 접속 및 데이터 갱신 시작
+    doOpenBinanceTicker();
 
 });
 

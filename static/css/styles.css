@@ -11261,3 +11261,117 @@ body {
 .nav-item.dropdown:hover .tooltip-construction {
   display: block; /* Show on hover */
 }
+
+/* 러퍼럴 코드 Copy 버튼 : 20240723 */
+span .copy-button {
+  display: none;
+  margin-left: 5px;
+  padding: 3px 8px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+span:hover .copy-button {
+  display: inline-block;
+}
+
+/* coins-marquee : 20240723 */
+.coins-marquee {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #E2E8F0;
+    overflow: hidden
+}
+
+.coins-marquee:before,.coins-marquee:after {
+    content: "";
+    display: table
+}
+
+.coins-marquee:after {
+    clear: both
+}
+
+.coins-marquee .nav {
+    align-items: center;
+    flex-wrap: nowrap
+}
+
+.coins-marquee .nav>li{
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 10px 10px;
+    color: var(--hh-color-text);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all var(--hh-duration-default)
+}
+
+.coins-marquee .nav>li:hover {
+    background-color: #f7f8fe
+}
+
+.coins-marquee .nav>li img {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    -o-object-fit: cover;
+    object-fit: cover
+}
+
+.coins-marquee .nav>li span {
+    display: inline-block;
+    margin-left: 6px
+}
+
+.coins-marquee .nav>li span small {
+    font-size: 12px;
+    font-weight: 400;
+    color: #475569;
+    text-transform: uppercase
+}
+
+.coins-marquee .nav>li span.name {
+    font-weight: 600
+}
+
+.coins-marquee .nav>li span.change {
+    position: relative;
+    border-radius: 10px;
+    padding: 2px 6px 2px 18px;
+    font-size: 12px
+}
+
+.coins-marquee .nav>li span.change:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 6px;
+    width: 12px;
+    height: 12px;
+    margin-top: -6px;
+    background-repeat: no-repeat;
+    background-position: 0;
+    background-size: contain
+}
+
+.coins-marquee .nav>li span.change.up {
+    background-color: rgba(78,175,10,.1);
+    color: #4eaf0a
+}
+
+.coins-marquee .nav>li span.change.up:before {
+    background-image: url(../img/arrow-up-green.svg)
+}
+
+.coins-marquee .nav>li span.change.down {
+    background-color: rgba(225,82,65,.1);
+    color: #e15241
+}
+
+.coins-marquee .nav>li span.change.down:before {
+    background-image: url(../img/arrow-down-red.svg)
+}
