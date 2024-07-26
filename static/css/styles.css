@@ -11385,7 +11385,7 @@ span:hover .copy-button {
 
 .affiliate-links .nav {
     display: inline-flex; /* .nav를 inline-flex container로 설정 */
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
 }
 
 .affiliate-links .nav>li {
