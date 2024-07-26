@@ -11375,3 +11375,49 @@ span:hover .copy-button {
 .coins-marquee .nav>li span.change.down:before {
     background-image: url(../img/arrow-down-red.svg)
 }
+
+
+/* affiliate links  : 20240723 */
+.affiliate-links {
+    overflow: hidden;
+    text-align: center; /* ul 내부 텍스트를 가로 중앙 정렬 */
+}
+
+.affiliate-links .nav {
+    display: inline-flex; /* .nav를 inline-flex container로 설정 */
+    flex-wrap: nowrap;
+}
+
+.affiliate-links .nav>li {
+    margin: 0 10px; /* li 사이 간격 조절 */
+}
+
+.affiliate-links .nav>li a{
+    display: flex;
+    align-items: center; /* a 태그 내부 세로 중앙 정렬 */
+    flex-wrap: nowrap;
+    padding: 10px 10px;
+    color: var(--hh-color-text);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all var(--hh-duration-default)
+}
+
+.affiliate-links .nav>li a:hover {
+    background-color: #f7f8fe
+}
+
+.affiliate-links .nav>li img {
+    height: 25px;
+    -o-object-fit: cover;
+    object-fit: cover
+}
+
+.affiliate-links .nav>li span {
+    display: inline-block;
+    margin-left: 6px
+}
+
+.affiliate-links .nav>li span.name {
+    font-weight: 600
+}
