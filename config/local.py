@@ -13,6 +13,7 @@ print(filename)
 config.read(filename)
 
 sysname  = config.get('default', 'sysname')
+IS_API = config.get('default', 'is_api')
 if not sysname:
     raise ValueError
 use_db = config.get(sysname, 'use_db', fallback=None)

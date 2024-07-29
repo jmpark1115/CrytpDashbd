@@ -16,6 +16,7 @@ getcontext().prec = 10
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.conf import settings
 
 try:
     from exchange.bn     import Bn
@@ -376,6 +377,11 @@ class Maker(object):
         return
 
     def hds_setup(self, force=False):
+
+        if settings.IS_API == 'YES':
+            logger.debug('======= API SERVER =======')
+            return
+
         logger.debug('hds setup')
         if not self.hds or self.hdid == -1 or force:
             hds_conf = Arbitrage.objects.filter(enable=True)
