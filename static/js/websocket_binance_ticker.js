@@ -41,9 +41,9 @@
 			//console.log("BINANCE MESSAGE : " + e.data);
 			let binance_ticker = JSON.parse(e.data);
 			//console.log("stream : " + binance_ticker['stream']);
-			console.log("Symbol : " + binance_ticker['data']['s']);
-			console.log("last_price : " + binance_ticker['data']['c']);
-			console.log("change_percent : " + binance_ticker['data']['P']);
+			//console.log("Symbol : " + binance_ticker['data']['s']);
+			//console.log("last_price : " + binance_ticker['data']['c']);
+			//console.log("change_percent : " + binance_ticker['data']['P']);
 			symbol = binance_ticker['data']['s'];
 			last_price = binance_ticker['data']['c'];
 			change_percent = binance_ticker['data']['P'];
@@ -56,7 +56,7 @@
 	}
 
     function set_ticker_price_result(exchange, symbol, price, change_percent){
-        console.log(exchange + ' : ' +  symbol + ' : '+ price + ' : '+ change_percent);
+        //console.log(exchange + ' : ' +  symbol + ' : '+ price + ' : '+ change_percent);
         let class_str = "";
         if (change_percent > 0){
             class_str = "change up";

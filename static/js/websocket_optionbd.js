@@ -54,8 +54,15 @@ function _option_message(e) {
     optionData.expirationDates = jsonData.expireDate;
     optionData.tickers = jsonData.data;
     optionData.timestamp = jsonData.executeTime;
+    optionData.clientInfo = jsonData.clientInfo;
+    updateClientCount(optionData.clientInfo);
     updateTable(optionData);
 
+}
+
+// Option Datatable 갱신
+function updateClientCount(clientInfo) {
+    $('#total_client_count').text(clientInfo.totalCnt);
 }
 
 // Option Datatable 갱신

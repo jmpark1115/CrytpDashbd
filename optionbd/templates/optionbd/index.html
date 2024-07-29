@@ -193,6 +193,11 @@
                         </div>
                         <!-- coins-marquee END -->
 
+
+                        {% if request.user.is_superuser %}
+                        전체 접속자 수 : <span id="total_client_count"></span>명
+                        {% endif %}
+
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="bi bi-activity me-1"></i>
