@@ -18,7 +18,7 @@
 		wsAdress = _binance_index_adress + _binance_index_markets;
 		_wSocket_binance_index = new WebSocket(wsAdress);
 
-		_wSocket_binance_index.onopen = function(e) { _binance_open(e); };
+		_wSocket_binance_index.onopen = function(e) { _binance_index_open(e); };
 		_wSocket_binance_index.onclose = function(e) { _binance_index_close(e); };
 		_wSocket_binance_index.onmessage = function(e) { _binance_index_message(e) }
 		_wSocket_binance_index.onerror = function(e) { _binance_index_error(e); };
