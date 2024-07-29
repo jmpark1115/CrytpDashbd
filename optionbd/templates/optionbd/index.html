@@ -27,7 +27,7 @@
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
             <a class="navbar-brand ps-3" href="{% url 'optionbd:index' %}">
-                <img src="{% static 'img/cryptopang_logo.png' %}" alt="cryptopang_logo">
+                <img src="{% static 'img/cryptopang_logo.png' %}" width="200" height="38" alt="cryptopang_logo">
             </a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
@@ -193,38 +193,42 @@
                         </div>
                         <!-- coins-marquee END -->
 
-                        <h1 class="mt-4">
-                          Dashboard
-                        </h1>
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="bi bi-activity me-1"></i>
+                                Index Price
+                            </div>
+                            <div class="card-body">
 
-                        <div class="row">
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <div class="small text-white">BTC INDEX : $ <span id="binance_index_btc_price"></span></div>
-                                    </div>
+                                <div class="index-price">
+                                    <ul class="nav">
+                                        <li>
+                                            <img src="{% static 'img/coin/bitcoin.png' %}" alt="binance">
+                                            <span class="name">Bitcoin</span>
+                                            <span>$</span>
+                                            <span id="binance_index_btc_price"></span>
+                                        </li>
+                                        <li>
+                                            <img src="{% static 'img/coin/ethereum.png' %}" alt="okx">
+                                            <span class="name">Ethereum</span>
+                                            <span>$</span>
+                                            <span id="binance_index_eth_price"></span>
+                                        </li>
+                                        <li>
+                                            <img src="{% static 'img/coin/solana.png' %}" alt="bybit">
+                                            <span class="name">Solana</span>
+                                            <span>$</span>
+                                            <span id="binance_index_sol_price"></span>
+                                        </li>
+                                        <li>
+                                            <img src="{% static 'img/coin/xrp-symbol-white-128.png' %}" alt="deribit">
+                                            <span class="name">XRP</span>
+                                            <span>$</span>
+                                            <span id="binance_index_xrp_price"></span>
+                                        </li>
+                                    </ul>
                                 </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-warning text-white mb-4">
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <div class="small text-white">ETH INDEX : $ <span id="binance_index_eth_price"></span></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-success text-white mb-4">
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <div class="small text-white">SOL INDEX : $ <span id="binance_index_sol_price"></span></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-danger text-white mb-4">
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <div class="small text-white">XRP INDEX : $ <span id="binance_index_xrp_price"></span></div>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
 

@@ -11280,7 +11280,7 @@ span:hover .copy-button {
 
 /* coins-marquee : 20240723 */
 .coins-marquee {
-    margin-bottom: 10px;
+    margin-bottom: 25px;
     border-bottom: 1px solid #E2E8F0;
     overflow: hidden
 }
@@ -11390,13 +11390,13 @@ span:hover .copy-button {
 
 .affiliate-links .nav>li {
     margin: 0 10px; /* li 사이 간격 조절 */
+    padding: 5px 5px;
 }
 
 .affiliate-links .nav>li a{
     display: flex;
     align-items: center; /* a 태그 내부 세로 중앙 정렬 */
     flex-wrap: nowrap;
-    padding: 10px 10px;
     color: var(--hh-color-text);
     text-decoration: none;
     white-space: nowrap;
@@ -11419,5 +11419,35 @@ span:hover .copy-button {
 }
 
 .affiliate-links .nav>li span.name {
+    font-weight: 600
+}
+
+/* index-price  : 20240723 */
+.index-price {
+    overflow: hidden;
+    text-align: center; /* ul 내부 텍스트를 가로 중앙 정렬 */
+}
+
+.index-price .nav {
+    display: inline-flex; /* .nav를 inline-flex container로 설정 */
+    flex-wrap: wrap;
+}
+
+.index-price .nav>li {
+    margin: 0 15px; /* li 사이 간격 조절 */
+    padding: 5px 5px;
+}
+
+.index-price .nav>li img {
+    height: 25px;
+    -o-object-fit: cover;
+    object-fit: cover
+}
+
+.index-price .nav>li span {
+    display: inline-block;
+}
+
+.index-price .nav>li span.name {
     font-weight: 600
 }
